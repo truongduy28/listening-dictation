@@ -1,2 +1,192 @@
 @import "tailwindcss";
 
+:root {
+  --bg-page: #f5f5f7;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-subtle: #f5f5f7;
+  --bg-seg-container: #ececf0;
+  --bg-seg-active: #ffffff;
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #3a3a3c;
+  --border-default: #e5e5ea;
+  --border-card: rgba(0, 0, 0, 0.04);
+  --border-input: #d2d2d7;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.05);
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-active: 0 1px 2px rgba(0, 0, 0, 0.14);
+  --shadow-play: 0 6px 18px rgba(0, 0, 0, 0.25);
+  --shadow-cta: 0 8px 24px rgba(0, 0, 0, 0.18);
+  --shadow-dialog: 0 24px 60px rgba(0, 0, 0, 0.28);
+  --accent-btn: #1d1d1f;
+  --accent-btn-text: #ffffff;
+  --waveform-played: #1d1d1f;
+  --waveform-unplayed: #c7c7cc;
+  --danger: #d70015;
+  --danger-bg: #fdecee;
+  --focus-ring: #0071e3;
+  --slider-accent: #1d1d1f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-page: #000000;
+    --bg-sidebar: #0d0d0f;
+    --bg-card: #111113;
+    --bg-subtle: #1c1c1e;
+    --bg-seg-container: #1c1c1e;
+    --bg-seg-active: #48484a;
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #a1a1a6;
+    --border-default: #1f1f22;
+    --border-card: #232326;
+    --border-input: #3a3a3c;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-active: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-play: 0 6px 18px rgba(255, 255, 255, 0.12);
+    --shadow-cta: 0 8px 24px rgba(255, 255, 255, 0.1);
+    --shadow-dialog: 0 24px 60px rgba(0, 0, 0, 0.7);
+    --accent-btn: #f5f5f7;
+    --accent-btn-text: #1d1d1f;
+    --waveform-played: #f5f5f7;
+    --waveform-unplayed: #48484a;
+    --danger: #ff6961;
+    --danger-bg: #2a1215;
+    --focus-ring: #64d2ff;
+    --slider-accent: #f5f5f7;
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Button & Interactive styles mapping design */
+.ghost {
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.ghost:hover {
+  background: rgba(127, 127, 127, 0.1);
+}
+
+.row-item {
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.row-item:hover {
+  background: rgba(127, 127, 127, 0.08);
+}
+
+.row-item.on, .row-item.on:hover {
+  background: var(--accent-btn);
+  color: var(--accent-btn-text);
+}
+
+.seg-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-tertiary);
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.seg-btn.on {
+  background: var(--bg-seg-active);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-active);
+}
+
+.pill-btn {
+  border: 1px solid var(--border-input);
+  background: transparent;
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+}
+
+.pill-btn.on {
+  background: var(--accent-btn);
+  border-color: var(--accent-btn);
+  color: var(--accent-btn-text);
+}
+
+.cta-btn {
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.cta-btn:hover {
+  opacity: 0.92;
+}
+
+.cta-btn:active {
+  transform: scale(0.98);
+}
+
+/* Focus states */
+label:focus-within {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Number inputs without spinner arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Clean Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(127, 127, 127, 0.25);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(127, 127, 127, 0.4);
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

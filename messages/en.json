@@ -1,0 +1,94 @@
+{
+  "app": {
+    "title": "Dictation",
+    "tagline": "Audio player for listening dictation",
+    "nowPlaying": "Now Playing",
+    "playingOf": "Playing · {current} / {total}",
+    "starAria": "Star to review later",
+    "shortcutsAria": "Keyboard shortcuts",
+    "folderSettingsAria": "Folder settings",
+    "collapseSidebarAria": "Collapse sidebar",
+    "expandSidebarAria": "Expand sidebar"
+  },
+  "folder": {
+    "filesCount": "{count} files · {listened} listened",
+    "change": "Change",
+    "searchPlaceholder": "Search files…",
+    "searchAria": "Search files",
+    "filterAll": "All",
+    "filterUnheard": "Unheard",
+    "filterListened": "Listened",
+    "filterStarred": "Starred",
+    "emptyList": "No matching files found",
+    "noFiles": "No audio files in folder",
+    "loading": "Loading audio files…",
+    "noFolder": "No folder selected",
+    "noFileActive": "No active audio file"
+  },
+  "permission": {
+    "desc": "Browser needs permission to re-access folder {folder} to play audio.",
+    "grant": "Grant Access"
+  },
+  "player": {
+    "replayAria": "Replay from start (R)",
+    "prevAria": "Previous file (Up arrow)",
+    "rewindAria": "Rewind {seconds}s (Left arrow)",
+    "playPauseAria": "Play or pause (Space)",
+    "forwardAria": "Forward {seconds}s (Right arrow)",
+    "nextAria": "Next file (Down arrow)",
+    "loopBadge": "Repeat {current}/{total}",
+    "loopBadgeWithGap": "Repeat {current}/{total} · next track in {gap}s",
+    "loopBadgeDone": "Completed {total} repeats",
+    "gapRepeat": "Pause {countdown}s · Preparing repeat {next}/{total}",
+    "gapNext": "Pause {countdown}s · Next track",
+    "autoNextBadge": "Next track in {gap}s",
+    "singlePlayBadge": "Play once",
+    "errorFormat": "Cannot play this audio file (unsupported format or corrupted file)",
+    "largeFileNotice": "Large file (>20MB) — Skipping waveform · Click to seek",
+    "progressAria": "Waveform, played {percent}%",
+    "upNext": "Up Next"
+  },
+  "toolbar": {
+    "speed": "Speed",
+    "volume": "Volume",
+    "volumeValue": "{value}%",
+    "skipStep": "Seek Step",
+    "skipStepValue": "{seconds}s",
+    "repeatCount": "Repeats per file",
+    "times": "times",
+    "gapSeconds": "Pause interval",
+    "seconds": "sec",
+    "autoNext": "Auto-next",
+    "on": "On",
+    "off": "Off"
+  },
+  "shortcuts": {
+    "space": "Play / Pause",
+    "arrowsLR": "Seek",
+    "arrowsUD": "Prev / Next",
+    "brackets": "Speed",
+    "keyR": "Replay"
+  },
+  "welcome": {
+    "headline": "Listen by sentence.<br>Transcribe every word.",
+    "description": "Select an audio folder to listen continuously, loop each sentence, and control playback with your keyboard. Everything runs locally on your machine—no uploads.",
+    "chooseFolder": "Choose audio folder",
+    "loading": "Reading folder…",
+    "formatsHint": "Supports mp3, m4a, and common audio formats",
+    "feature1Title": "Loop at your pace",
+    "feature1Desc": "Configure repetition count and pause duration so you have time to write before the next sentence.",
+    "feature2Title": "Keyboard first",
+    "feature2Desc": "Play, seek, switch files, and adjust speed without taking your hands off the keyboard.",
+    "feature3Title": "Resume anywhere",
+    "feature3Desc": "Reopen anytime to continue right from the last file, with starred difficult sentences saved.",
+    "safariTitle": "You are using Safari.",
+    "safariDesc": "This browser cannot remember folder handles, so you need to pick your folder each session. Settings and last played file are preserved. Use Chrome to auto-remember folders."
+  },
+  "reset": {
+    "button": "Reset",
+    "dialogTitle": "Reset application?",
+    "dialogDesc": "Settings, folder session, listening history, and stars will be cleared from this browser. Your local audio files will not be modified.",
+    "cancel": "Cancel",
+    "confirm": "Reset"
+  }
+}

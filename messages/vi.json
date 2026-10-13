@@ -1,0 +1,94 @@
+{
+  "app": {
+    "title": "Nghe chép",
+    "tagline": "Trình phát audio cho nghe chép chính tả",
+    "nowPlaying": "Đang phát",
+    "playingOf": "Đang phát · {current} / {total}",
+    "starAria": "Gắn sao để nghe lại",
+    "shortcutsAria": "Xem phím tắt",
+    "folderSettingsAria": "Cài đặt thư mục",
+    "collapseSidebarAria": "Thu gọn thanh bên",
+    "expandSidebarAria": "Mở rộng thanh bên"
+  },
+  "folder": {
+    "filesCount": "{count} tệp · {listened} đã nghe",
+    "change": "Đổi",
+    "searchPlaceholder": "Tìm tệp…",
+    "searchAria": "Tìm tệp",
+    "filterAll": "Tất cả",
+    "filterUnheard": "Chưa nghe",
+    "filterListened": "Đã nghe",
+    "filterStarred": "Gắn sao",
+    "emptyList": "Không tìm thấy tệp phù hợp",
+    "noFiles": "Thư mục không có tệp audio",
+    "loading": "Đang đọc tệp audio…",
+    "noFolder": "Chưa chọn thư mục",
+    "noFileActive": "Chưa có file audio"
+  },
+  "permission": {
+    "desc": "Trình duyệt cần quyền truy cập lại vào thư mục {folder} để phát nhạc.",
+    "grant": "Cấp quyền lại"
+  },
+  "player": {
+    "replayAria": "Phát lại từ đầu (R)",
+    "prevAria": "Tệp trước (mũi tên lên)",
+    "rewindAria": "Tua lùi {seconds} giây (mũi tên trái)",
+    "playPauseAria": "Phát hoặc dừng (Space)",
+    "forwardAria": "Tua tới {seconds} giây (mũi tên phải)",
+    "nextAria": "Tệp sau (mũi tên xuống)",
+    "loopBadge": "Lặp {current}/{total}",
+    "loopBadgeWithGap": "Lặp {current}/{total} · chuyển câu sau {gap}s",
+    "loopBadgeDone": "Đã lặp đủ {total} lần",
+    "gapRepeat": "Nghỉ {countdown}s · Chuẩn bị lặp {next}/{total}",
+    "gapNext": "Nghỉ {countdown}s · Chuyển câu tiếp theo",
+    "autoNextBadge": "Chuyển câu sau {gap}s",
+    "singlePlayBadge": "Phát 1 lần",
+    "errorFormat": "Không thể phát tệp âm thanh này (Định dạng không được hỗ trợ hoặc file bị lỗi)",
+    "largeFileNotice": "Tệp lớn (>20MB) — Bỏ qua dựng sóng âm · Click để tua nhanh",
+    "progressAria": "Sóng âm, đã phát {percent}%",
+    "upNext": "Tiếp theo"
+  },
+  "toolbar": {
+    "speed": "Tốc độ",
+    "volume": "Âm lượng",
+    "volumeValue": "{value}%",
+    "skipStep": "Tua mỗi lần",
+    "skipStepValue": "{seconds} giây",
+    "repeatCount": "Lặp mỗi tệp",
+    "times": "lần",
+    "gapSeconds": "Nghỉ giữa các lần",
+    "seconds": "giây",
+    "autoNext": "Tự chuyển câu",
+    "on": "Bật",
+    "off": "Tắt"
+  },
+  "shortcuts": {
+    "space": "Phát / dừng",
+    "arrowsLR": "Tua",
+    "arrowsUD": "Đổi tệp",
+    "brackets": "Tốc độ",
+    "keyR": "Phát lại"
+  },
+  "welcome": {
+    "headline": "Nghe từng câu.<br>Chép từng chữ.",
+    "description": "Chọn thư mục chứa file audio, rồi nghe liên tục, lặp từng câu và chỉnh tốc độ bằng bàn phím. Mọi thứ chạy ngay trên máy bạn, không tải file lên đâu cả.",
+    "chooseFolder": "Chọn thư mục audio",
+    "loading": "Đang đọc thư mục…",
+    "formatsHint": "Hỗ trợ mp3, m4a và các định dạng audio phổ biến",
+    "feature1Title": "Lặp theo ý bạn",
+    "feature1Desc": "Nhập số lần lặp và thời gian nghỉ để kịp chép trước khi sang câu sau.",
+    "feature2Title": "Điều khiển bằng phím",
+    "feature2Desc": "Phát, tua, đổi câu, đổi tốc độ mà tay không rời bàn phím.",
+    "feature3Title": "Nhớ nơi bạn dừng",
+    "feature3Desc": "Mở lại là tiếp tục đúng câu cuối, kèm các câu đã gắn sao để nghe lại.",
+    "safariTitle": "Bạn đang dùng Safari.",
+    "safariDesc": "Trình duyệt này không nhớ được thư mục, nên mỗi lần mở lại bạn cần chọn lại. Cài đặt và câu đã nghe cuối vẫn được giữ. Dùng Chrome để được nhớ thư mục."
+  },
+  "reset": {
+    "button": "Đặt lại",
+    "dialogTitle": "Đặt lại ứng dụng?",
+    "dialogDesc": "Cài đặt, thư mục đã chọn, câu đã nghe và các dấu sao sẽ bị xóa khỏi trình duyệt này. File audio của bạn không bị ảnh hưởng.",
+    "cancel": "Hủy",
+    "confirm": "Đặt lại"
+  }
+}

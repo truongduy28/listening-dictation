@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Listening Dictation App",
-  description: "Listening Dictation App",
+  title: "Nghe chép — Audio Dictation Player",
+  description: "Trình phát audio cho nghe chép chính tả — Chạy offline, lặp câu, phím tắt linh hoạt",
 };
 
 export default function RootLayout({
@@ -12,9 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="vi" suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );
 }
-
