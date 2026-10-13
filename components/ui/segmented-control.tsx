@@ -34,7 +34,7 @@ export function SegmentedControl<T extends string | number>({
               key={String(opt.value)}
               type="button"
               onClick={() => onChange(opt.value)}
-              className={`pill-btn flex-1 h-10 rounded-xl text-sm font-semibold tabular-nums cursor-pointer ${
+              className={`pill-btn flex-1 h-10 rounded-xl text-sm font-semibold tabular-nums cursor-pointer transition-all duration-150 active:scale-95 ${
                 isSelected ? "on" : ""
               } ${buttonClassName}`}
             >
@@ -57,7 +57,7 @@ export function SegmentedControl<T extends string | number>({
             key={String(opt.value)}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`seg-btn flex-1 h-[30px] rounded-lg text-[12.5px] font-medium px-1 ${
+            className={`seg-btn flex-1 h-[30px] rounded-lg text-[12.5px] font-medium px-1 transition-all duration-150 active:scale-95 ${
               isSelected ? "on" : ""
             } ${buttonClassName}`}
           >

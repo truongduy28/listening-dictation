@@ -115,7 +115,10 @@ listening-dictation-app/
 │       ├── slider-field.tsx       # Slider kéo thanh trượt tùy chỉnh
 │       └── switch.tsx             # Nút gạt bật/tắt (Toggle switch)
 ├── hooks/
-│   └── use-audio-player.ts    # Audio hook (HTMLAudioElement, WaveSurfer, Pitch)
+│   ├── use-audio-player.ts        # Audio engine (HTMLAudioElement, WaveSurfer, Pitch)
+│   ├── use-dictation-loop.ts      # Vòng lặp dictation (Lặp N lần, nghỉ X giây, đếm ngược)
+│   ├── use-folder-library.ts      # Quản lý thư mục (File System API, IndexedDB, lọc & tìm kiếm)
+│   └── use-keyboard-shortcuts.ts  # Hệ thống phím tắt toàn cục (Keyboard hotkeys)
 ├── lib/
 │   ├── db.ts                  # Quản lý IndexedDB lưu Directory Handle
 │   ├── file-system.ts         # Xử lý File System Access API & Natural Sort

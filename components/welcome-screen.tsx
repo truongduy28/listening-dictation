@@ -40,13 +40,16 @@ export function WelcomeScreen({ onOpenFolder, isSafari = false, isLoading = fals
       {/* Main Hero Content */}
       <main className="flex-1 flex flex-col items-center justify-center gap-10 px-8 pt-6 pb-14 box-border text-center">
         <div className="flex flex-col items-center gap-4.5 max-w-[680px]">
-          {/* Waveform graphic */}
+          {/* Waveform graphic with animated wave */}
           <div className="flex items-center gap-1 h-16" aria-hidden="true">
             {bars.map((b, idx) => (
               <div
                 key={idx}
-                style={{ height: `${b.height}px` }}
-                className={`w-[5px] rounded-[3px] transition-all duration-300 ${
+                style={{
+                  height: `${b.height}px`,
+                  animationDelay: `${(idx * 0.07).toFixed(2)}s`,
+                }}
+                className={`w-[5px] rounded-[3px] animate-wave ${
                   b.isPlayed ? "bg-[var(--waveform-played)]" : "bg-[var(--waveform-unplayed)]"
                 }`}
               />
@@ -68,7 +71,7 @@ export function WelcomeScreen({ onOpenFolder, isSafari = false, isLoading = fals
             type="button"
             disabled={isLoading}
             onClick={onOpenFolder}
-            className="cta-btn h-14 px-8 border-0 rounded-[28px] bg-[var(--accent-btn)] text-[var(--accent-btn-text)] text-[17px] font-semibold flex items-center gap-2.5 shadow-[var(--shadow-cta)] cursor-pointer disabled:opacity-60"
+            className="cta-btn h-14 px-8 border-0 rounded-[28px] bg-[var(--accent-btn)] text-[var(--accent-btn-text)] text-[17px] font-semibold flex items-center gap-2.5 shadow-[var(--shadow-cta)] cursor-pointer hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 disabled:opacity-60"
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -83,43 +86,53 @@ export function WelcomeScreen({ onOpenFolder, isSafari = false, isLoading = fals
         </div>
 
         {/* 3 Features Cards */}
-        <div className="flex flex-wrap justify-center gap-4 max-w-[920px] w-full">
-          <div className="flex-1 min-w-[260px] bg-[var(--bg-card)] rounded-[20px] p-5 text-left flex flex-col gap-2 shadow-[var(--shadow-subtle)]">
-            <Repeat className="w-6 h-6 text-[var(--text-primary)]" strokeWidth={1.8} />
-            <div className="text-base font-semibold">{t("welcome.feature1Title")}</div>
-            <div className="text-sm leading-relaxed text-[var(--text-secondary)]">
+        <section
+          aria-labelledby="features-heading"
+          className="flex flex-wrap justify-center gap-4 max-w-[920px] w-full"
+        >
+          <h2 id="features-heading" className="sr-only">
+            Tính năng nổi bật
+          </h2>
+
+          <article className="flex-1 min-w-[260px] bg-[var(--bg-card)] rounded-[20px] p-5 text-left flex flex-col gap-2 shadow-[var(--shadow-subtle)] border border-transparent hover:border-[var(--border-default)] hover:-translate-y-1 hover:shadow-md transition-all duration-200">
+            <Repeat className="w-6 h-6 text-[var(--text-primary)]" strokeWidth={1.8} aria-hidden="true" />
+            <h3 className="text-base font-semibold m-0">{t("welcome.feature1Title")}</h3>
+            <p className="text-sm leading-relaxed text-[var(--text-secondary)] m-0">
               {t("welcome.feature1Desc")}
-            </div>
-          </div>
+            </p>
+          </article>
 
-          <div className="flex-1 min-w-[260px] bg-[var(--bg-card)] rounded-[20px] p-5 text-left flex flex-col gap-2 shadow-[var(--shadow-subtle)]">
-            <Keyboard className="w-6 h-6 text-[var(--text-primary)]" strokeWidth={1.8} />
-            <div className="text-base font-semibold">{t("welcome.feature2Title")}</div>
-            <div className="text-sm leading-relaxed text-[var(--text-secondary)]">
+          <article className="flex-1 min-w-[260px] bg-[var(--bg-card)] rounded-[20px] p-5 text-left flex flex-col gap-2 shadow-[var(--shadow-subtle)] border border-transparent hover:border-[var(--border-default)] hover:-translate-y-1 hover:shadow-md transition-all duration-200">
+            <Keyboard className="w-6 h-6 text-[var(--text-primary)]" strokeWidth={1.8} aria-hidden="true" />
+            <h3 className="text-base font-semibold m-0">{t("welcome.feature2Title")}</h3>
+            <p className="text-sm leading-relaxed text-[var(--text-secondary)] m-0">
               {t("welcome.feature2Desc")}
-            </div>
-          </div>
+            </p>
+          </article>
 
-          <div className="flex-1 min-w-[260px] bg-[var(--bg-card)] rounded-[20px] p-5 text-left flex flex-col gap-2 shadow-[var(--shadow-subtle)]">
-            <Star className="w-6 h-6 text-[var(--text-primary)]" strokeWidth={1.8} />
-            <div className="text-base font-semibold">{t("welcome.feature3Title")}</div>
-            <div className="text-sm leading-relaxed text-[var(--text-secondary)]">
+          <article className="flex-1 min-w-[260px] bg-[var(--bg-card)] rounded-[20px] p-5 text-left flex flex-col gap-2 shadow-[var(--shadow-subtle)] border border-transparent hover:border-[var(--border-default)] hover:-translate-y-1 hover:shadow-md transition-all duration-200">
+            <Star className="w-6 h-6 text-[var(--text-primary)]" strokeWidth={1.8} aria-hidden="true" />
+            <h3 className="text-base font-semibold m-0">{t("welcome.feature3Title")}</h3>
+            <p className="text-sm leading-relaxed text-[var(--text-secondary)] m-0">
               {t("welcome.feature3Desc")}
-            </div>
-          </div>
-        </div>
+            </p>
+          </article>
+        </section>
 
         {/* Safari info box */}
         {isSafari && (
-          <div className="flex items-start gap-3 max-w-[620px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-2xl p-4 text-left shadow-[var(--shadow-subtle)]">
-            <Info className="w-5 h-5 text-[var(--text-secondary)] shrink-0 mt-0.5" strokeWidth={1.8} />
+          <aside
+            aria-label="Thông báo trình duyệt Safari"
+            className="flex items-start gap-3 max-w-[620px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-2xl p-4 text-left shadow-[var(--shadow-subtle)]"
+          >
+            <Info className="w-5 h-5 text-[var(--text-secondary)] shrink-0 mt-0.5" strokeWidth={1.8} aria-hidden="true" />
             <div className="text-[13.5px] leading-relaxed text-[var(--text-tertiary)]">
               <strong className="font-semibold text-[var(--text-primary)]">
                 {t("welcome.safariTitle")}{" "}
               </strong>
               {t("welcome.safariDesc")}
             </div>
-          </div>
+          </aside>
         )}
       </main>
     </div>

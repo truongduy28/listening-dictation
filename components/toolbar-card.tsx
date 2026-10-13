@@ -49,7 +49,10 @@ export function ToolbarCard({
   }));
 
   return (
-    <section className="bg-[var(--bg-card)] rounded-[24px] p-6 md:px-7 md:py-6 shadow-[var(--shadow-subtle)] border border-[var(--border-card)] flex flex-wrap gap-6 md:gap-7">
+    <section
+      aria-label="Cài đặt phát và vòng lặp"
+      className="bg-[var(--bg-card)] rounded-[24px] p-6 md:px-7 md:py-6 shadow-[var(--shadow-subtle)] border border-[var(--border-card)] flex flex-wrap gap-6 md:gap-7"
+    >
       {/* 1. Tốc độ (Speed) */}
       <div className="flex-[2_1_320px] flex flex-col gap-2.5">
         <span className="text-xs font-semibold tracking-wider text-[var(--text-secondary)] uppercase">

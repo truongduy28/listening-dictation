@@ -21,7 +21,10 @@ export function TrackHeader({
   const { t } = useI18n();
 
   return (
-    <header className="flex items-end justify-between gap-4 flex-wrap">
+    <header
+      aria-label="Thông tin bài đang phát"
+      className="flex items-end justify-between gap-4 flex-wrap"
+    >
       <div>
         <div className="text-[13px] text-[var(--text-secondary)] font-medium">
           {totalFiles > 0
@@ -36,15 +39,15 @@ export function TrackHeader({
         </h1>
       </div>
 
-      <div className="flex gap-1">
+      <div className="flex gap-1.5">
         {/* Star toggle */}
         <button
           type="button"
           disabled={!currentFile}
           onClick={onToggleStar}
           aria-label={t("app.starAria")}
-          className={`ghost w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-30 ${
-            currentFile?.starred ? "text-amber-500" : ""
+          className={`ghost w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-125 hover:scale-110 disabled:opacity-30 disabled:scale-100 ${
+            currentFile?.starred ? "text-amber-500 shadow-sm bg-amber-500/10" : "hover:text-amber-500"
           }`}
         >
           <Star
@@ -60,7 +63,7 @@ export function TrackHeader({
           type="button"
           onClick={onOpenShortcuts}
           aria-label={t("app.shortcutsAria")}
-          className="ghost w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer"
+          className="ghost w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 hover:scale-105"
         >
           <Keyboard className="w-[22px] h-[22px]" strokeWidth={1.8} />
         </button>

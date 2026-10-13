@@ -34,7 +34,16 @@ export function NumberField({
       <span className="text-xs font-semibold tracking-wider text-[var(--text-secondary)] uppercase">
         {label}
       </span>
-      <label className="flex items-center gap-2 text-sm text-[var(--text-tertiary)]">
+      <div className="flex items-center gap-1.5 text-sm text-[var(--text-tertiary)]">
+        <button
+          type="button"
+          disabled={value <= min}
+          onClick={() => onChange(Math.max(min, value - 1))}
+          aria-label={`Giảm ${label}`}
+          className="w-8 h-10 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)] flex items-center justify-center text-base font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] active:scale-90 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed select-none"
+        >
+          −
+        </button>
         <input
           type="number"
           min={min}
@@ -42,10 +51,19 @@ export function NumberField({
           value={value}
           onChange={handleChange}
           aria-label={ariaLabel || label}
-          className="w-16 h-10 box-border text-center border border-[var(--border-input)] rounded-xl bg-[var(--bg-card)] font-inherit text-base font-semibold tabular-nums text-[var(--text-primary)]"
+          className="w-14 h-10 box-border text-center border border-[var(--border-input)] rounded-xl bg-[var(--bg-card)] font-inherit text-base font-semibold tabular-nums text-[var(--text-primary)] focus:border-[var(--accent-btn)] transition-colors"
         />
-        <span>{unit}</span>
-      </label>
+        <button
+          type="button"
+          disabled={value >= max}
+          onClick={() => onChange(Math.min(max, value + 1))}
+          aria-label={`Tăng ${label}`}
+          className="w-8 h-10 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)] flex items-center justify-center text-base font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] active:scale-90 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed select-none"
+        >
+          +
+        </button>
+        <span className="ml-1 text-[13px] font-medium">{unit}</span>
+      </div>
     </div>
   );
 }

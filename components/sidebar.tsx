@@ -36,6 +36,7 @@ interface SidebarProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
   isLoading?: boolean;
+  isPlaying?: boolean;
 }
 
 export function Sidebar({
@@ -55,6 +56,7 @@ export function Sidebar({
   searchQuery,
   onSearchChange,
   isLoading = false,
+  isPlaying = false,
 }: SidebarProps) {
   const { t } = useI18n();
 
@@ -238,8 +240,9 @@ export function Sidebar({
       />
 
       {/* File List */}
-      <div
+      <nav
         ref={listContainerRef}
+        aria-label="Danh sách tệp audio"
         className="relative flex-1 min-h-0 max-h-[470px] overflow-y-auto flex flex-col gap-0.5 -mx-1 px-1"
       >
         {isLoading ? (
@@ -260,13 +263,14 @@ export function Sidebar({
                 ref={isSelected ? activeItemRef : undefined}
                 file={f}
                 isSelected={isSelected}
+                isPlaying={isSelected && isPlaying}
                 onSelect={onSelectFile}
                 onToggleStar={onToggleStar}
               />
             );
           })
         )}
-      </div>
+      </nav>
 
       {/* Bottom Footer: Language & Reset */}
       <div className="mt-auto flex items-center justify-between pt-1">

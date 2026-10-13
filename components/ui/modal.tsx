@@ -35,14 +35,14 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-6 box-border transition-opacity duration-200"
+      className="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex items-center justify-center p-6 box-border animate-fade-in"
       onClick={onClose}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={ariaLabelledBy}
-        className={`w-full ${maxWidth} bg-[var(--bg-card)] rounded-[24px] p-6 shadow-[var(--shadow-dialog)] border border-[var(--border-card)] transition-transform duration-200 ${className}`}
+        className={`w-full ${maxWidth} bg-[var(--bg-card)] rounded-[24px] p-6 shadow-[var(--shadow-dialog)] border border-[var(--border-card)] animate-modal-pop ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
