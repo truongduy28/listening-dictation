@@ -1,0 +1,6 @@
+{
+  "dictation_settings": "{\"language\":\"vi\",\"playbackRate\":0.75,\"volume\":0.8,\"skipSeconds\":5,\"autoNext\":true,\"repeatCount\":3,\"gapSeconds\":2,\"sidebarCollapsed\":false}",
+  "dictation_session": "{\"folderName\":\"ETS TOEIC Test 01\",\"lastFile\":\"test01_part1_01.mp3\"}",
+  "dictation_marks": "{\"ETS TOEIC Test 01\":{\"test01_part1_01.mp3\":{\"listened\":true,\"star\":true},\"test01_part1_02.mp3\":{\"listened\":false,\"star\":true}}}",
+  "dictation_recent_folders": "[{\"folderName\":\"ETS TOEIC Test 01\",\"lastFile\":\"test01_part1_01.mp3\",\"totalFiles\":100,\"lastIndex\":1,\"updatedAt\":1710000000000}]"
+}

@@ -1,6 +1,6 @@
 # Nghe chép — Audio Dictation Player
 
-Ứng dụng web chuyên dụng cho việc luyện nghe chép chính tả (dictation), tối ưu hóa trải nghiệm cho các bộ đề thi như **ETS TOEIC** (thư mục chứa hàng trăm câu audio ngắn, lặp lại câu linh hoạt, khoảng nghỉ chép bài và hệ thống phím tắt bàn phím).
+Ứng dụng web chuyên dụng cho việc luyện nghe chép chính tả (dictation), tối ưu hóa trải nghiệm cho các bộ đề thi như **ETS TOEIC** (thư mục chứa hàng trăm câu audio ngắn, lặp lại câu linh hoạt, khoảng nghỉ chép bài, lặp đoạn A–B trực quan và hệ thống phím tắt bàn phím).
 
 ---
 
@@ -14,14 +14,15 @@
 - **Hỗ trợ định dạng**: `.mp3`, `.m4a`, `.wav`, `.aac`, `.flac`, `.ogg`, `.webm`.
 - **Natural Sort**: Sắp xếp tệp theo đúng thứ tự số học tự nhiên (`1, 2, 3... 9, 10, 11... 100`), không bị đảo thứ tự chuỗi (`1, 10, 100, 2`).
 - **Tìm kiếm & Bộ lọc thông minh**:
-  - Lọc: **Tất cả**, **Chưa nghe**, **Đã nghe**, **Gắn sao** (Starred).
+  - Lọc: **Tất cả**, **Chưa nghe**, **Gắn sao** (Starred).
   - Tìm kiếm tức thì theo số thứ tự hoặc từ khóa trong tên file.
   - Tự động cuộn danh sách (`auto-scroll`) đến vị trí câu đang phát khi tải lại trang (F5) hoặc đổi bài.
 
-### 3. 🌊 Sóng âm trực quan (WaveSurfer) & Trình phát Audio
+### 3. 🌊 Sóng âm trực quan (WaveSurfer) & Lặp đoạn A–B
 - **Dạng sóng WaveSurfer**: Hiển thị tiến độ và dạng sóng chi tiết; click để nhảy tới vị trí bất kỳ.
+- **Lặp đoạn A–B chính xác**: Đặt mốc A, B để lặp lại một cụm từ khó nghe với 2 handle kéo thả mượt mà và nền highlight trực quan.
 - **Tối ưu file lớn**: Tự động chuyển sang chế độ thanh tiến độ nhẹ (lightweight seek bar) cho các tệp âm thanh dung lượng lớn (> 20MB) để tránh lag bộ nhớ.
-- **Giữ nguyên cao độ giọng**: Tích hợp `preservesPitch` giúp âm thanh không bị méo tiếng khi thay đổi tốc độ.
+- **Giữ nguyên cao độ giọng**: Tích hợp `preservesPitch` giúp âm thanh không bị méo tiếng khi thay đổi tốc độ (`0.5x` đến `1.5x`).
 
 ### 4. 🔁 Cơ chế lặp Dictation & Khoảng nghỉ (Gap Interval)
 - **Lặp lại $N$ lần mỗi tệp**: Tùy chỉnh tự do từ `1` đến `99` lần.
@@ -38,7 +39,10 @@
 | `←` / `→` | **Tua lùi / Tua tới** | Nhảy theo số giây tùy chỉnh (`skipSeconds`) |
 | `↑` / `↓` | **Tệp trước / Tệp sau** | Chuyển bài trước hoặc bài kế tiếp trong danh sách |
 | `[` / `]` | **Giảm / Tăng tốc độ** | Chuyển đổi giữa các mức: `0.5x`, `0.75x`, `1.0x`, `1.25x`, `1.5x` |
-| `R` | **Phát lại từ đầu** | Tua về 0:00 và phát lại câu hiện tại |
+| `R` | **Phát lại từ đầu** | Tua về 0:00 (hoặc mốc A nếu đang lặp A–B) và phát lại câu |
+| `A` / `B` | **Đặt mốc A / B** | Đặt điểm bắt đầu / kết thúc đoạn lặp |
+| `X` | **Xóa đoạn lặp A–B** | Hủy lặp đoạn và quay lại toàn bộ file |
+| `M` | **Đánh dấu sao (Star)** | Bật/tắt trạng thái yêu thích của câu đang nghe |
 
 *Lưu ý: Phím tắt tự động vô hiệu hóa an toàn khi đang focus vào ô nhập liệu hoặc khi các hộp thoại (dialog) đang mở.*
 
@@ -49,92 +53,7 @@
 - **Hỗ trợ Safari**: Tự động nhận diện trình duyệt Safari, cung cấp fallback qua `webkitdirectory` và giữ nguyên cài đặt cùng bài đang nghe dở.
 - **Xóa sạch dữ liệu (Reset)**: Hộp thoại xác nhận an toàn giúp đặt lại toàn bộ thiết lập, xóa session và dọn sạch IndexedDB + LocalStorage.
 
-### 7. 🎨 Giao diện & Đa ngôn ngữ (i18n)
-- **Thiết kế chuẩn Apple**: Tối giản, thanh lịch, bo góc mềm mại, độ tương phản cao, hỗ trợ chuyển đổi giao diện Dark / Light Mode theo hệ thống.
-- **Đa ngôn ngữ**: Hỗ trợ đầy đủ **Tiếng Việt** và **English**, chuyển đổi tức thì không cần tải lại trang.
-
----
-
-## 🛠️ Cài đặt & Khởi chạy
-
-### Yêu cầu hệ thống
-- Node.js 18 trở lên
-- Trình duyệt khuyến nghị: **Google Chrome** hoặc **Microsoft Edge** (để tận dụng File System Access API)
-
-### 1. Cài đặt thư viện
-```bash
-npm install
-```
-
-### 2. Chạy môi trường phát triển (Dev)
-```bash
-npm run dev
-```
-Truy cập [http://localhost:3000](http://localhost:3000) trên trình duyệt.
-
-### 3. Kiểm tra mã nguồn (Lint)
-```bash
-npm run lint
-```
-
-### 4. Đóng gói sản phẩm (Production Build)
-```bash
-npm run build
-npm start
-```
-
----
-
-## 📁 Cấu trúc thư mục
-
-```text
-listening-dictation-app/
-├── app/
-│   ├── globals.css            # Design tokens (colors, radii, shadows, typography)
-│   ├── layout.tsx             # Root Layout (Metadata, fonts, theme)
-│   └── page.tsx               # Dynamic client wrapper (ssr: false)
-├── components/
-│   ├── dictation-app.tsx      # Core state controller & interactive app logic
-│   ├── welcome-screen.tsx     # Màn hình chào mừng khi chưa chọn thư mục
-│   ├── sidebar.tsx            # Thanh điều hướng (danh sách tệp, lọc, tìm kiếm)
-│   ├── sidebar-file-item.tsx  # Item hiển thị tệp âm thanh kèm ref cuộn
-│   ├── track-header.tsx       # Tiêu đề bài nghe, đếm số thứ tự & gắn sao
-│   ├── player-card.tsx        # Trình phát audio WaveSurfer & nút điều khiển
-│   ├── toolbar-card.tsx       # Thanh công cụ tùy chỉnh tốc độ, lặp, khoảng nghỉ
-│   ├── shortcuts-footer.tsx   # Gợi ý phím tắt nhanh ở chân trang
-│   ├── shortcuts-dialog.tsx   # Hộp thoại hướng dẫn phím tắt chi tiết
-│   ├── reset-dialog.tsx       # Hộp thoại xác nhận đặt lại dữ liệu
-│   ├── permission-banner.tsx  # Banner xin lại quyền truy cập thư mục
-│   └── ui/                    # Thư viện component dùng chung
-│       ├── app-brand.tsx          # Logo & nhận diện thương hiệu
-│       ├── language-toggle.tsx    # Nút chuyển đổi Tiếng Việt / English
-│       ├── modal.tsx              # Generic Accessible Modal Dialog
-│       ├── number-field.tsx       # Ô nhập số kèm nút tăng/giảm stepper
-│       ├── segmented-control.tsx  # Nhóm nút chọn dạng viên thuốc (Pill)
-│       ├── skip-icon.tsx          # Icon tua lùi/tới kèm số giây
-│       ├── slider-field.tsx       # Slider kéo thanh trượt tùy chỉnh
-│       └── switch.tsx             # Nút gạt bật/tắt (Toggle switch)
-├── hooks/
-│   ├── use-audio-player.ts        # Audio engine (HTMLAudioElement, WaveSurfer, Pitch)
-│   ├── use-dictation-loop.ts      # Vòng lặp dictation (Lặp N lần, nghỉ X giây, đếm ngược)
-│   ├── use-folder-library.ts      # Quản lý thư mục (File System API, IndexedDB, lọc & tìm kiếm)
-│   └── use-keyboard-shortcuts.ts  # Hệ thống phím tắt toàn cục (Keyboard hotkeys)
-├── lib/
-│   ├── db.ts                  # Quản lý IndexedDB lưu Directory Handle
-│   ├── file-system.ts         # Xử lý File System Access API & Natural Sort
-│   ├── i18n.tsx               # Provider & Context quản lý đa ngôn ngữ (vi/en)
-│   ├── pwa.ts                 # Trình đăng ký Service Worker & standalone detection
-│   └── storage.ts             # LocalStorage helper (Settings, Session, Marks)
-├── messages/
-│   ├── vi.json                # Bản dịch Tiếng Việt
-│   └── en.json                # Bản dịch Tiếng Anh
-└── public/
-    ├── manifest.webmanifest   # PWA Web Manifest (icons, standalone, colors)
-    ├── sw.js                  # Service Worker (precache App Shell, stale-while-revalidate)
-    └── icons/                 # PWA icons (192, 512, maskable 512, apple touch 180)
-```
-
-### 8. 📱 Progressive Web App (PWA) & Ngoại tuyến (Offline)
+### 7. 📱 Progressive Web App (PWA) & Ngoại tuyến (Offline)
 - **Cài đặt như ứng dụng riêng (Standalone)**:
   - **Chrome / Edge**: Bấm nút **"Cài đặt ứng dụng"** ở chân thanh bên hoặc biểu tượng cài đặt trên thanh địa chỉ trình duyệt.
   - **Safari (macOS Sonoma trở lên)**: Chọn **Tệp → Thêm vào Dock** (File → Add to Dock).
@@ -142,7 +61,52 @@ listening-dictation-app/
 - **Không tốn dung lượng cho audio**: Toàn bộ tệp audio được phát trực tiếp từ máy, tuyệt đối không bị cache vào bộ nhớ trình duyệt (Cache Storage).
 - **Thông báo cập nhật**: Khi có phiên bản mới, hiển thị thông báo với nút "Tải lại" tức thì.
 
-### ⚠️ Giới hạn hệ thống & Trình duyệt
+---
+
+## 🛠️ Cài đặt & Khởi chạy
+
+### Yêu cầu hệ thống
+- Node.js 20 trở lên
+- Trình duyệt khuyến nghị: **Google Chrome** hoặc **Microsoft Edge** (để tận dụng File System Access API)
+
+```bash
+# 1. Cài đặt dependencies
+npm install
+
+# 2. Khởi chạy môi trường phát triển (Dev)
+npm run dev
+
+# 3. Chạy toàn bộ unit & integration tests
+npm test
+
+# 4. Kiểm tra độ phủ kiểm thử (Coverage ≥ 85%)
+npm run test:coverage
+
+# 5. Kiểm tra kiểu dữ liệu (TypeScript)
+npm run typecheck
+
+# 6. Kiểm tra quy chuẩn mã nguồn (ESLint)
+npm run lint
+
+# 7. Đóng gói bản phát hành tĩnh (Static Export)
+npm run build
+```
+
+---
+
+## 📚 Tài liệu chi tiết (Documentation)
+
+- [Kiến trúc ứng dụng (Architecture Guide)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/ARCHITECTURE.md)
+- [Hướng dẫn kiểm thử & Báo cáo độ phủ (Testing Guide)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/TESTING.md)
+- [Hướng dẫn triển khai Vercel (Deployment Guide)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/DEPLOY.md)
+- [Kế hoạch tái cấu trúc Phase 3 (Refactor Plan)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/REFACTOR_PLAN.md)
+- [Danh mục hành vi hệ thống (Behavior Catalog)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/BEHAVIOR_CATALOG.md)
+- [Báo cáo Baseline trước refactor (Baseline Report)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/BASELINE.md)
+
+---
+
+## ⚠️ Giới hạn hệ thống & Trình duyệt đã biết
+
 - **Quyền đọc thư mục khi ngoại tuyến (Chrome / Edge)**: Nếu quyền truy cập thư mục của trình duyệt đã hết hiệu lực giữa các phiên, Chrome sẽ yêu cầu người dùng bấm **"Cấp quyền lại"** (thao tác này hoàn toàn cục bộ, không cần kết nối mạng).
 - **Giới hạn trên Safari**: Safari hiện chưa hỗ trợ File System Access API và không lưu lại handle thư mục giữa các lần đóng/mở trình duyệt (kể cả khi đã Thêm vào Dock). Do đó, mỗi lần mở mới Safari người dùng cần chọn lại thư mục một lần; cài đặt và tiến độ nghe dở vẫn được lưu trữ đầy đủ.
 

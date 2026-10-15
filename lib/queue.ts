@@ -1,6 +1,7 @@
 import type { AudioFile } from "./file-system";
 
 export type QueueFilter = "all" | "unheard" | "listened" | "starred";
+export type FilterType = QueueFilter;
 
 /**
  * Filter audio files according to current filter type and search query.
@@ -132,3 +133,6 @@ export function getQueueStatus({
         : `– / ${total}`,
   };
 }
+
+export type QueueStatus = ReturnType<typeof getQueueStatus>;
+

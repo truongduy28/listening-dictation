@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
+import { isEditableElement, getShortcutAction } from "@/lib/keyboard";
 
-interface KeyboardShortcutsOptions {
+export interface KeyboardShortcutsOptions {
   disabled?: boolean;
   onTogglePlay: () => void;
   onRewind: () => void;
@@ -42,108 +43,53 @@ export function useKeyboardShortcuts({
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (disabled) return;
+      if (isEditableElement(document.activeElement)) return;
 
-      // Ignore when focusing input, textarea, select, or contenteditable elements
-      const active = document.activeElement;
-      if (
-        active &&
-        (active.tagName === "INPUT" ||
-          active.tagName === "TEXTAREA" ||
-          active.tagName === "SELECT" ||
-          (active as HTMLElement).isContentEditable)
-      ) {
-        return;
-      }
+      const action = getShortcutAction(e);
+      if (!action) return;
 
-      // Space: Toggle Play / Pause
-      if (e.code === "Space") {
-        e.preventDefault();
-        onTogglePlay();
-        return;
-      }
+      e.preventDefault();
 
-      // Left Arrow: Rewind
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        onRewind();
-        return;
-      }
-
-      // Right Arrow: Fast-forward
-      if (e.key === "ArrowRight") {
-        e.preventDefault();
-        onForward();
-        return;
-      }
-
-      // Up Arrow: Previous file
-      if (e.key === "ArrowUp") {
-        e.preventDefault();
-        onPrev();
-        return;
-      }
-
-      // Down Arrow: Next file
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        onNext();
-        return;
-      }
-
-      // [: Decrease playback rate
-      if (e.key === "[" || e.code === "BracketLeft") {
-        e.preventDefault();
-        onSpeedDown();
-        return;
-      }
-
-      // ]: Increase playback rate
-      if (e.key === "]" || e.code === "BracketRight") {
-        e.preventDefault();
-        onSpeedUp();
-        return;
-      }
-
-      // R: Replay from beginning
-      if (e.key === "r" || e.key === "R" || e.code === "KeyR") {
-        e.preventDefault();
-        onReplay();
-        return;
-      }
-
-      // S: Toggle Star
-      if (e.key === "s" || e.key === "S" || e.code === "KeyS") {
-        e.preventDefault();
-        onToggleStar?.();
-        return;
-      }
-
-      // M: Toggle Mute
-      if (e.key === "m" || e.key === "M" || e.code === "KeyM") {
-        e.preventDefault();
-        onToggleMute?.();
-        return;
-      }
-
-      // A: Set Point A
-      if (e.key === "a" || e.key === "A" || e.code === "KeyA") {
-        e.preventDefault();
-        onSetA?.();
-        return;
-      }
-
-      // B: Set Point B
-      if (e.key === "b" || e.key === "B" || e.code === "KeyB") {
-        e.preventDefault();
-        onSetB?.();
-        return;
-      }
-
-      // X: Clear A-B Loop
-      if (e.key === "x" || e.key === "X" || e.code === "KeyX") {
-        e.preventDefault();
-        onClearAB?.();
-        return;
+      switch (action) {
+        case "togglePlay":
+          onTogglePlay();
+          break;
+        case "rewind":
+          onRewind();
+          break;
+        case "forward":
+          onForward();
+          break;
+        case "prev":
+          onPrev();
+          break;
+        case "next":
+          onNext();
+          break;
+        case "speedDown":
+          onSpeedDown();
+          break;
+        case "speedUp":
+          onSpeedUp();
+          break;
+        case "replay":
+          onReplay();
+          break;
+        case "toggleStar":
+          onToggleStar?.();
+          break;
+        case "toggleMute":
+          onToggleMute?.();
+          break;
+        case "setA":
+          onSetA?.();
+          break;
+        case "setB":
+          onSetB?.();
+          break;
+        case "clearAB":
+          onClearAB?.();
+          break;
       }
     },
     [

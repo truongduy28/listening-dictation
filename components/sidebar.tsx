@@ -4,8 +4,6 @@ import React, { useRef, useEffect } from "react";
 import {
   SlidersHorizontal,
   PanelLeftClose,
-  PanelLeftOpen,
-  Folder,
   Search,
   Star,
   RotateCcw,
@@ -17,6 +15,8 @@ import { LanguageToggle } from "@/components/ui/language-toggle";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { SidebarFileItem } from "@/components/sidebar-file-item";
 import { InstallButton } from "@/components/pwa/install-button";
+import { SidebarCollapsed } from "@/components/sidebar-collapsed";
+import { SidebarFolderCard } from "@/components/sidebar-folder-card";
 
 export type FilterType = "all" | "unheard" | "listened" | "starred";
 
@@ -103,61 +103,12 @@ export function Sidebar({
   // Render Collapsed Sidebar (Template D)
   if (collapsed) {
     return (
-      <aside className="w-[72px] shrink-0 h-screen sticky top-0 box-border bg-[var(--bg-sidebar)] border-r border-[var(--border-default)] py-4 flex flex-col items-center gap-1.5 transition-all duration-200">
-        <AppBrand showTitle={false} size="md" className="mb-2.5" />
-
-        <button
-          type="button"
-          onClick={onToggleCollapse}
-          aria-label={t("app.expandSidebarAria")}
-          className="ghost w-12 h-12 rounded-[14px] flex items-center justify-center cursor-pointer"
-        >
-          <PanelLeftOpen className="w-[22px] h-[22px]" strokeWidth={1.8} />
-        </button>
-
-        <button
-          type="button"
-          onClick={onChangeFolder}
-          aria-label={t("app.folderSettingsAria")}
-          className="ghost w-12 h-12 rounded-[14px] flex items-center justify-center cursor-pointer"
-        >
-          <Folder className="w-[22px] h-[22px]" strokeWidth={1.8} />
-        </button>
-
-        <button
-          type="button"
-          onClick={onToggleCollapse}
-          aria-label={t("folder.searchAria")}
-          className="ghost w-12 h-12 rounded-[14px] flex items-center justify-center cursor-pointer"
-        >
-          <Search className="w-[22px] h-[22px]" strokeWidth={1.9} />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            onFilterChange("starred");
-            onToggleCollapse();
-          }}
-          aria-label={t("folder.filterStarred")}
-          className="ghost w-12 h-12 rounded-[14px] flex items-center justify-center cursor-pointer"
-        >
-          <Star className="w-[22px] h-[22px]" strokeWidth={1.8} />
-        </button>
-
-        <div className="mt-auto flex flex-col items-center gap-1.5">
-          <LanguageToggle collapsed />
-
-          <button
-            type="button"
-            onClick={onReset}
-            aria-label={t("reset.button")}
-            className="ghost w-12 h-12 rounded-[14px] flex items-center justify-center text-[var(--danger)] cursor-pointer"
-          >
-            <RotateCcw className="w-[22px] h-[22px]" strokeWidth={1.9} />
-          </button>
-        </div>
-      </aside>
+      <SidebarCollapsed
+        onToggleCollapse={onToggleCollapse}
+        onChangeFolder={onChangeFolder}
+        onFilterChange={onFilterChange}
+        onReset={onReset}
+      />
     );
   }
 
@@ -189,36 +140,13 @@ export function Sidebar({
       </div>
 
       {/* Folder status card */}
-      <div className="bg-[var(--bg-subtle)] rounded-2xl p-3.5 flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-[38px] h-[38px] rounded-[11px] bg-[var(--bg-card)] flex items-center justify-center shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
-            <Folder className="w-5 h-5 text-[var(--text-primary)]" strokeWidth={1.8} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold truncate">
-              {folderName || t("folder.noFolder")}
-            </div>
-            <div className="text-xs text-[var(--text-secondary)] mt-0.5">
-              {t("folder.filesCount", { count: totalFiles, listened: listenedCount })}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onChangeFolder}
-            className="ghost h-[30px] px-2.5 rounded-lg text-[13px] font-medium cursor-pointer"
-          >
-            {t("folder.change")}
-          </button>
-        </div>
-
-        {/* Folder progress bar */}
-        <div className="h-1 rounded-sm bg-[var(--border-default)] overflow-hidden">
-          <div
-            style={{ width: `${progressPercent}%` }}
-            className="h-1 rounded-sm bg-[var(--accent-btn)] transition-all duration-300"
-          />
-        </div>
-      </div>
+      <SidebarFolderCard
+        folderName={folderName}
+        totalFiles={totalFiles}
+        listenedCount={listenedCount}
+        progressPercent={progressPercent}
+        onChangeFolder={onChangeFolder}
+      />
 
       {/* Search Input */}
       <label className="flex items-center gap-2 h-[38px] px-3 rounded-xl bg-[var(--bg-subtle)] text-[var(--text-secondary)]">
