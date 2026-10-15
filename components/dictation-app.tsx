@@ -304,6 +304,7 @@ function DictationAppInner() {
     togglePlay,
     play,
     pause,
+    resetAudio,
     seek,
     seekToPercent,
     skip,
@@ -442,10 +443,10 @@ function DictationAppInner() {
   });
 
   // 12. Reset Confirmation Flow
-  const handleResetConfirm = async () => {
+  const handleResetConfirm = useCallback(async () => {
     clearGapTimer();
     clearAbLoop();
-    pause();
+    resetAudio();
     setIsResetOpen(false);
     lastLoadedIdRef.current = null;
 
@@ -459,7 +460,7 @@ function DictationAppInner() {
 
     await resetLibrary();
     clearAllStorage();
-  };
+  }, [clearGapTimer, clearAbLoop, resetAudio, resetLibrary]);
 
   // If user hasn't selected a folder, show Welcome Screen
   if (!hasFolder) {

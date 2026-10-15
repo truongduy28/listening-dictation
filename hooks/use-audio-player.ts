@@ -462,6 +462,34 @@ export function useAudioPlayer({
     audio.play().catch(() => {});
   }, []);
 
+  const resetAudio = useCallback(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      try {
+        audio.pause();
+      } catch {}
+      audio.removeAttribute("src");
+      audio.load();
+    }
+    if (currentUrlRef.current) {
+      try {
+        URL.revokeObjectURL(currentUrlRef.current);
+      } catch {}
+      currentUrlRef.current = null;
+    }
+    if (waveSurferRef.current) {
+      try {
+        waveSurferRef.current.destroy();
+      } catch {}
+      waveSurferRef.current = null;
+    }
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+    setHasFile(false);
+    setHasError(false);
+  }, []);
+
   const progressPercent = duration > 0 ? Math.round((currentTime / duration) * 100) : 0;
 
   return {
@@ -477,6 +505,7 @@ export function useAudioPlayer({
     loadFile,
     play,
     pause,
+    resetAudio,
     togglePlay,
     seek,
     seekToPercent,

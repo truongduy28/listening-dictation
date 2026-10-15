@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useSyncExternalStore } from "react";
+import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { useI18n } from "@/lib/i18n";
 import { AppBrand } from "@/components/ui/app-brand";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { OfflineBadge } from "@/components/pwa/offline-badge";
-import { getRecentFolders, RecentFolder } from "@/lib/storage";
+import { getRecentFolders, subscribeRecentFolders, RecentFolder } from "@/lib/storage";
 
 interface WelcomeScreenProps {
   onOpenFolder?: () => void;
@@ -14,7 +14,6 @@ interface WelcomeScreenProps {
   isLoading?: boolean;
 }
 
-const emptySubscribe = () => () => {};
 const emptyRecentFolders: RecentFolder[] = [];
 const getEmptyRecentFolders = () => emptyRecentFolders;
 
@@ -92,16 +91,16 @@ export function WelcomeScreen({
 
   // Read recent folders from local storage safely without hydration mismatch
   const recentFolders = useSyncExternalStore(
-    emptySubscribe,
+    subscribeRecentFolders,
     getRecentFolders,
     getEmptyRecentFolders
   );
 
-  const clientNow = useSyncExternalStore(
-    emptySubscribe,
-    () => Date.now(),
-    () => 0
-  );
+  const [clientNow, setClientNow] = useState<number>(0);
+
+  useEffect(() => {
+    setClientNow(Date.now());
+  }, []);
 
   const formatRecentTime = (timestamp: number) => {
     if (!clientNow) return "";

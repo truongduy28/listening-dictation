@@ -131,9 +131,28 @@ export type RecentFolder = {
 };
 
 const RECENT_FOLDERS_KEY = "dictation_recent_folders";
+const RECENT_FOLDERS_EVENT = "dictation_recent_folders_changed";
 
 let cachedRaw: string | null = null;
 let cachedList: RecentFolder[] = [];
+
+function notifyRecentFoldersChanged(): void {
+  if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+    try {
+      window.dispatchEvent(new Event(RECENT_FOLDERS_EVENT));
+    } catch {}
+  }
+}
+
+export function subscribeRecentFolders(callback: () => void): () => void {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener(RECENT_FOLDERS_EVENT, callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener(RECENT_FOLDERS_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+}
 
 export function getRecentFolders(): RecentFolder[] {
   if (typeof window === "undefined") return [];
@@ -156,7 +175,11 @@ export function saveRecentFolder(folder: Omit<RecentFolder, "updatedAt">): void 
       { ...folder, updatedAt: Date.now() },
       ...list,
     ].slice(0, 3);
-    localStorage.setItem(RECENT_FOLDERS_KEY, JSON.stringify(updated));
+    const serialized = JSON.stringify(updated);
+    cachedRaw = serialized;
+    cachedList = updated;
+    localStorage.setItem(RECENT_FOLDERS_KEY, serialized);
+    notifyRecentFoldersChanged();
   } catch (err) {
     console.warn("Failed to save recent folder:", err);
   }
@@ -166,7 +189,11 @@ export function removeRecentFolder(folderName: string): void {
   if (typeof window === "undefined") return;
   try {
     const list = getRecentFolders().filter((f) => f.folderName !== folderName);
-    localStorage.setItem(RECENT_FOLDERS_KEY, JSON.stringify(list));
+    const serialized = JSON.stringify(list);
+    cachedRaw = serialized;
+    cachedList = list;
+    localStorage.setItem(RECENT_FOLDERS_KEY, serialized);
+    notifyRecentFoldersChanged();
   } catch (err) {
     console.warn("Failed to remove recent folder:", err);
   }
@@ -179,6 +206,9 @@ export function clearAllStorage(): void {
     localStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(MARKS_KEY);
     localStorage.removeItem(RECENT_FOLDERS_KEY);
+    cachedRaw = null;
+    cachedList = [];
+    notifyRecentFoldersChanged();
   } catch {
     // Ignore
   }
