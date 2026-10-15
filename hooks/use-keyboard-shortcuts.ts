@@ -12,6 +12,11 @@ interface KeyboardShortcutsOptions {
   onSpeedDown: () => void;
   onSpeedUp: () => void;
   onReplay: () => void;
+  onToggleStar?: () => void;
+  onToggleMute?: () => void;
+  onSetA?: () => void;
+  onSetB?: () => void;
+  onClearAB?: () => void;
 }
 
 /**
@@ -28,6 +33,11 @@ export function useKeyboardShortcuts({
   onSpeedDown,
   onSpeedUp,
   onReplay,
+  onToggleStar,
+  onToggleMute,
+  onSetA,
+  onSetB,
+  onClearAB,
 }: KeyboardShortcutsOptions) {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -100,6 +110,41 @@ export function useKeyboardShortcuts({
         onReplay();
         return;
       }
+
+      // S: Toggle Star
+      if (e.key === "s" || e.key === "S" || e.code === "KeyS") {
+        e.preventDefault();
+        onToggleStar?.();
+        return;
+      }
+
+      // M: Toggle Mute
+      if (e.key === "m" || e.key === "M" || e.code === "KeyM") {
+        e.preventDefault();
+        onToggleMute?.();
+        return;
+      }
+
+      // A: Set Point A
+      if (e.key === "a" || e.key === "A" || e.code === "KeyA") {
+        e.preventDefault();
+        onSetA?.();
+        return;
+      }
+
+      // B: Set Point B
+      if (e.key === "b" || e.key === "B" || e.code === "KeyB") {
+        e.preventDefault();
+        onSetB?.();
+        return;
+      }
+
+      // X: Clear A-B Loop
+      if (e.key === "x" || e.key === "X" || e.code === "KeyX") {
+        e.preventDefault();
+        onClearAB?.();
+        return;
+      }
     },
     [
       disabled,
@@ -111,6 +156,11 @@ export function useKeyboardShortcuts({
       onSpeedDown,
       onSpeedUp,
       onReplay,
+      onToggleStar,
+      onToggleMute,
+      onSetA,
+      onSetB,
+      onClearAB,
     ]
   );
 

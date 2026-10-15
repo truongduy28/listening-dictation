@@ -4,42 +4,67 @@ import React from "react";
 import { Star, Keyboard } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { AudioFile } from "@/lib/file-system";
+import { FilterType } from "@/components/sidebar";
+import { QueueChip } from "@/components/queue-chip";
+import { OfflineBadge } from "@/components/pwa/offline-badge";
 
 interface TrackHeaderProps {
   currentFile: AudioFile | null;
-  totalFiles: number;
+  queueIndex: number;
+  queueTotal: number;
+  filter: FilterType;
+  searchQuery: string;
   onToggleStar: () => void;
   onOpenShortcuts: () => void;
+  onQueueClick?: () => void;
 }
 
 export function TrackHeader({
   currentFile,
-  totalFiles,
+  queueIndex,
+  queueTotal,
+  filter,
+  searchQuery,
   onToggleStar,
   onOpenShortcuts,
+  onQueueClick,
 }: TrackHeaderProps) {
   const { t } = useI18n();
 
+  const counterText =
+    queueTotal === 0
+      ? "0 / 0"
+      : queueIndex > 0
+      ? t("app.playingOf", {
+          current: queueIndex,
+          total: queueTotal,
+        })
+      : `– / ${queueTotal}`;
+
   return (
     <header
-      aria-label="Thông tin bài đang phát"
-      className="flex items-end justify-between gap-4 flex-wrap"
+      aria-label={t("app.trackHeaderAria")}
+      className="flex items-start justify-between gap-4 flex-wrap"
     >
-      <div>
-        <div className="text-[13px] text-[var(--text-secondary)] font-medium">
-          {totalFiles > 0
-            ? t("app.playingOf", {
-                current: currentFile?.index || 1,
-                total: totalFiles,
-              })
-            : "0 / 0"}
+      <div className="flex-1 min-w-0">
+        <div className="text-[13px] text-[var(--text-secondary)] font-medium tabular-nums">
+          {counterText}
         </div>
-        <h1 className="mt-0.5 mb-0 text-2xl md:text-[30px] leading-tight font-semibold tracking-[-0.02em]">
+        <h1 className="mt-0.5 mb-0 text-2xl md:text-[30px] leading-tight font-semibold tracking-[-0.02em] truncate">
           {currentFile?.name || t("folder.noFileActive")}
         </h1>
+        <div className="flex items-center gap-2 flex-wrap">
+          <QueueChip
+            filter={filter}
+            searchQuery={searchQuery}
+            count={queueTotal}
+            onClick={onQueueClick}
+          />
+          <OfflineBadge />
+        </div>
       </div>
 
-      <div className="flex gap-1.5">
+      <div className="flex gap-1.5 shrink-0 pt-1">
         {/* Star toggle */}
         <button
           type="button"

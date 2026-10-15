@@ -122,12 +122,63 @@ export function saveMark(
   }
 }
 
+export type RecentFolder = {
+  folderName: string;
+  lastFile: string;
+  totalFiles: number;
+  lastIndex: number;
+  updatedAt: number;
+};
+
+const RECENT_FOLDERS_KEY = "dictation_recent_folders";
+
+let cachedRaw: string | null = null;
+let cachedList: RecentFolder[] = [];
+
+export function getRecentFolders(): RecentFolder[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(RECENT_FOLDERS_KEY);
+    if (raw === cachedRaw) return cachedList;
+    cachedRaw = raw;
+    cachedList = raw ? JSON.parse(raw) : [];
+    return cachedList;
+  } catch {
+    return [];
+  }
+}
+
+export function saveRecentFolder(folder: Omit<RecentFolder, "updatedAt">): void {
+  if (typeof window === "undefined" || !folder.folderName) return;
+  try {
+    const list = getRecentFolders().filter((f) => f.folderName !== folder.folderName);
+    const updated: RecentFolder[] = [
+      { ...folder, updatedAt: Date.now() },
+      ...list,
+    ].slice(0, 3);
+    localStorage.setItem(RECENT_FOLDERS_KEY, JSON.stringify(updated));
+  } catch (err) {
+    console.warn("Failed to save recent folder:", err);
+  }
+}
+
+export function removeRecentFolder(folderName: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const list = getRecentFolders().filter((f) => f.folderName !== folderName);
+    localStorage.setItem(RECENT_FOLDERS_KEY, JSON.stringify(list));
+  } catch (err) {
+    console.warn("Failed to remove recent folder:", err);
+  }
+}
+
 export function clearAllStorage(): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.removeItem(SETTINGS_KEY);
     localStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(MARKS_KEY);
+    localStorage.removeItem(RECENT_FOLDERS_KEY);
   } catch {
     // Ignore
   }

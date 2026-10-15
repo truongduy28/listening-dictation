@@ -16,6 +16,7 @@ import {
   saveStoredSession,
   getStoredMarks,
   saveMark,
+  saveRecentFolder,
 } from "@/lib/storage";
 import { FilterType } from "@/components/sidebar";
 
@@ -101,8 +102,15 @@ export function useFolderLibrary(options: UseFolderLibraryOptions = {}) {
       setPermissionNeeded(false);
 
       const selectedFile = filesWithMarks.find((f) => f.id === targetFileId);
+      const targetIndex = filesWithMarks.findIndex((f) => f.id === targetFileId);
       if (selectedFile) {
         saveStoredSession({ folderName: name, lastFile: selectedFile.name });
+        saveRecentFolder({
+          folderName: name,
+          lastFile: selectedFile.name,
+          totalFiles: filesWithMarks.length,
+          lastIndex: targetIndex >= 0 ? targetIndex + 1 : 1,
+        });
       }
 
       if (onFileSelected) {
@@ -216,8 +224,15 @@ export function useFolderLibrary(options: UseFolderLibraryOptions = {}) {
     (id: string) => {
       setCurrentFileId(id);
       const target = files.find((f) => f.id === id);
+      const index = files.findIndex((f) => f.id === id);
       if (target && folderName) {
         saveStoredSession({ folderName, lastFile: target.name });
+        saveRecentFolder({
+          folderName,
+          lastFile: target.name,
+          totalFiles: files.length,
+          lastIndex: index >= 0 ? index + 1 : 1,
+        });
       }
       if (onFileSelected) {
         onFileSelected(id);

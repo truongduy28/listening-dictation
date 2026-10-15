@@ -35,7 +35,7 @@ export function SidebarFileItem({
     >
       <span className="w-7 flex items-center justify-start shrink-0">
         {isSelected && isPlaying ? (
-          <span className="flex items-end gap-[2px] h-3.5 w-3.5 shrink-0 pb-0.5" aria-label="Đang phát">
+          <span className="flex items-end gap-[2px] h-3.5 w-3.5 shrink-0 pb-0.5" aria-label={t("app.nowPlaying")}>
             <span className="w-[2px] bg-current rounded-full animate-eq-1" />
             <span className="w-[2px] bg-current rounded-full animate-eq-2" />
             <span className="w-[2px] bg-current rounded-full animate-eq-3" />

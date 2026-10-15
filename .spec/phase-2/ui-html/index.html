@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nghe chép — UI HTML</title>
+<style>
+body{margin:0;background:#f5f5f7;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:880px;margin:0 auto;padding:56px 24px}
+h1{font-size:40px;letter-spacing:-.03em;margin:0 0 8px}
+p{color:#6e6e73;font-size:17px;margin:0 0 32px;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px}
+.card{display:block;background:#fff;border-radius:24px;padding:24px;text-decoration:none;color:inherit;box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(0,0,0,.05);transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s}
+.card:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(0,0,0,.1)}
+.t{font-size:19px;font-weight:600;margin-bottom:6px}
+.d{font-size:15px;color:#6e6e73;line-height:1.5;margin-bottom:14px}
+.go{font-size:14px;font-weight:600}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>Nghe chép — UI</h1>
+<p>Bản HTML/CSS tĩnh của các màn hình thiết kế. Mở trực tiếp bằng trình duyệt, không cần cài gì. Dùng làm tham chiếu khi code.</p>
+<div class="grid">
+<a href="01-man-hinh-chinh.html" class="card"><div class="t">A · Màn hình chính</div><div class="d">Sidebar + player, hàng đợi Gắn sao, shuffle, đoạn A–B, nút cài app, toast cập nhật</div><div class="go">Mở trang ›</div></a>
+<a href="02-man-hinh-chao.html" class="card"><div class="t">B · Màn hình chào</div><div class="d">Welcome mới: nền ánh sáng, thẻ kính, player nổi, thư mục gần đây</div><div class="go">Mở trang ›</div></a>
+<a href="03-tablet.html" class="card"><div class="t">C · Tablet</div><div class="d">Sidebar thu gọn thành thanh icon + dialog xác nhận Đặt lại</div><div class="go">Mở trang ›</div></a>
+<a href="04-dialog-thu-muc.html" class="card"><div class="t">D · Dialog thư mục gần đây</div><div class="d">Các trạng thái: đang mở, thường, cần cấp quyền, lỗi</div><div class="go">Mở trang ›</div></a>
+</div>
+</main>
+</body>
+</html>

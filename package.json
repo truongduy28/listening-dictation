@@ -1,12 +1,14 @@
 {
   "name": "listening-dictation-app",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --experimental-strip-types --test lib/__tests__/*.test.ts"
   },
   "dependencies": {
     "lucide-react": "^1.55.0",

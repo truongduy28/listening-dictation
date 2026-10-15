@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 :root {
+  /* Core Phase 2 tokens */
+  --ink: #1d1d1f;
+  --ink-2: #3a3a3c;
+  --ink-3: #6e6e73;
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface-sunken: #ececf0;
+  --line: #e5e5ea;
+  --line-input: #d2d2d7;
+  --wave-idle: #c7c7cc;
+  --focus: #0071e3;
+
+  /* App semantic mappings */
   --bg-page: #f5f5f7;
   --bg-sidebar: #ffffff;
   --bg-card: #ffffff;
@@ -282,6 +295,7 @@ input[type="range"]::-webkit-slider-thumb:active {
   animation: wave-dance 2.4s ease-in-out infinite;
   transform-origin: bottom;
 }
+
 
 /* Accessibility: Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {

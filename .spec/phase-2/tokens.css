@@ -1,0 +1,47 @@
+/* Design tokens — trích từ mockup. Chỉ light mode. Dán vào src/app/globals.css */
+:root {
+  color-scheme: light;
+
+  /* Màu */
+  --bg: #f5f5f7;            /* nền trang */
+  --surface: #ffffff;       /* card, sidebar */
+  --surface-sunken: #ececf0;/* nền segmented, thanh tiến độ trống */
+  --ink: #1d1d1f;           /* chữ chính, nút chính, hàng active */
+  --ink-2: #3a3a3c;         /* chữ phụ đậm */
+  --ink-3: #6e6e73;         /* chữ mờ, nhãn */
+  --line: #e5e5ea;          /* viền sidebar */
+  --line-input: #d2d2d7;    /* viền input, pill */
+  --wave-idle: #c7c7cc;     /* cột sóng chưa phát */
+  --danger: #d70015;
+  --danger-bg: #fdecee;
+  --focus: #0071e3;         /* focus ring */
+  --scrim: rgba(0, 0, 0, 0.32);
+
+  /* Bo góc */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px; --r-2xl: 28px; --r-full: 999px;
+
+  /* Bóng */
+  --shadow-card: 0 1px 2px rgba(0,0,0,.04), 0 12px 32px rgba(0,0,0,.05);
+  --shadow-primary: 0 6px 18px rgba(0,0,0,.25);
+  --shadow-dialog: 0 24px 60px rgba(0,0,0,.28);
+  --shadow-seg: 0 1px 2px rgba(0,0,0,.14);
+
+  /* Font: hệ thống, không webfont */
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Chuyển động */
+  --dur-fast: 120ms; --dur-base: 220ms; --dur-slow: 320ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+
+button { font-family: inherit; cursor: pointer; transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-out), color var(--dur-fast); }
+button:active { transform: scale(0.96); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

@@ -123,11 +123,28 @@ listening-dictation-app/
 │   ├── db.ts                  # Quản lý IndexedDB lưu Directory Handle
 │   ├── file-system.ts         # Xử lý File System Access API & Natural Sort
 │   ├── i18n.tsx               # Provider & Context quản lý đa ngôn ngữ (vi/en)
+│   ├── pwa.ts                 # Trình đăng ký Service Worker & standalone detection
 │   └── storage.ts             # LocalStorage helper (Settings, Session, Marks)
-└── messages/
-    ├── vi.json                # Bản dịch Tiếng Việt
-    └── en.json                # Bản dịch Tiếng Anh
+├── messages/
+│   ├── vi.json                # Bản dịch Tiếng Việt
+│   └── en.json                # Bản dịch Tiếng Anh
+└── public/
+    ├── manifest.webmanifest   # PWA Web Manifest (icons, standalone, colors)
+    ├── sw.js                  # Service Worker (precache App Shell, stale-while-revalidate)
+    └── icons/                 # PWA icons (192, 512, maskable 512, apple touch 180)
 ```
+
+### 8. 📱 Progressive Web App (PWA) & Ngoại tuyến (Offline)
+- **Cài đặt như ứng dụng riêng (Standalone)**:
+  - **Chrome / Edge**: Bấm nút **"Cài đặt ứng dụng"** ở chân thanh bên hoặc biểu tượng cài đặt trên thanh địa chỉ trình duyệt.
+  - **Safari (macOS Sonoma trở lên)**: Chọn **Tệp → Thêm vào Dock** (File → Add to Dock).
+- **Hoạt động khi mất mạng**: Vỏ ứng dụng (App Shell) được cache qua Service Worker, mở tức thì khi offline.
+- **Không tốn dung lượng cho audio**: Toàn bộ tệp audio được phát trực tiếp từ máy, tuyệt đối không bị cache vào bộ nhớ trình duyệt (Cache Storage).
+- **Thông báo cập nhật**: Khi có phiên bản mới, hiển thị thông báo với nút "Tải lại" tức thì.
+
+### ⚠️ Giới hạn hệ thống & Trình duyệt
+- **Quyền đọc thư mục khi ngoại tuyến (Chrome / Edge)**: Nếu quyền truy cập thư mục của trình duyệt đã hết hiệu lực giữa các phiên, Chrome sẽ yêu cầu người dùng bấm **"Cấp quyền lại"** (thao tác này hoàn toàn cục bộ, không cần kết nối mạng).
+- **Giới hạn trên Safari**: Safari hiện chưa hỗ trợ File System Access API và không lưu lại handle thư mục giữa các lần đóng/mở trình duyệt (kể cả khi đã Thêm vào Dock). Do đó, mỗi lần mở mới Safari người dùng cần chọn lại thư mục một lần; cài đặt và tiến độ nghe dở vẫn được lưu trữ đầy đủ.
 
 ---
 

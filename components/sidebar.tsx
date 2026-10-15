@@ -16,6 +16,7 @@ import { AppBrand } from "@/components/ui/app-brand";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { SidebarFileItem } from "@/components/sidebar-file-item";
+import { InstallButton } from "@/components/pwa/install-button";
 
 export type FilterType = "all" | "unheard" | "listened" | "starred";
 
@@ -102,7 +103,7 @@ export function Sidebar({
   // Render Collapsed Sidebar (Template D)
   if (collapsed) {
     return (
-      <aside className="w-[72px] shrink-0 box-border bg-[var(--bg-sidebar)] border-r border-[var(--border-default)] py-4 flex flex-col items-center gap-1.5 transition-all duration-200">
+      <aside className="w-[72px] shrink-0 h-screen sticky top-0 box-border bg-[var(--bg-sidebar)] border-r border-[var(--border-default)] py-4 flex flex-col items-center gap-1.5 transition-all duration-200">
         <AppBrand showTitle={false} size="md" className="mb-2.5" />
 
         <button
@@ -162,7 +163,7 @@ export function Sidebar({
 
   // Render Full Expanded Sidebar (Template A & B)
   return (
-    <aside className="w-80 shrink-0 max-w-full box-border bg-[var(--bg-sidebar)] border-r border-[var(--border-default)] p-4 pt-5 pb-4 flex flex-col gap-4 transition-all duration-200">
+    <aside className="w-80 shrink-0 max-w-full h-screen sticky top-0 box-border bg-[var(--bg-sidebar)] border-r border-[var(--border-default)] p-4 pt-5 pb-4 flex flex-col gap-4 transition-all duration-200">
       {/* Sidebar Header */}
       <div className="flex items-center justify-between">
         <AppBrand />
@@ -242,8 +243,8 @@ export function Sidebar({
       {/* File List */}
       <nav
         ref={listContainerRef}
-        aria-label="Danh sách tệp audio"
-        className="relative flex-1 min-h-0 max-h-[470px] overflow-y-auto flex flex-col gap-0.5 -mx-1 px-1"
+        aria-label={t("app.audioListAria")}
+        className="relative flex-1 min-h-0 overflow-y-auto flex flex-col gap-0.5 -mx-1 px-1"
       >
         {isLoading ? (
           <div className="py-12 flex flex-col items-center justify-center gap-2 text-xs text-[var(--text-secondary)]">
@@ -251,8 +252,23 @@ export function Sidebar({
             <span>{t("folder.loading")}</span>
           </div>
         ) : files.length === 0 ? (
-          <div className="py-10 text-center text-xs text-[var(--text-secondary)]">
-            {totalFiles === 0 ? t("folder.noFiles") : t("folder.emptyList")}
+          <div className="py-10 px-4 flex flex-col items-center justify-center text-center gap-2 text-xs text-[var(--text-secondary)] animate-fadeIn">
+            {totalFiles === 0 ? (
+              <span>{t("folder.noFiles")}</span>
+            ) : searchQuery.trim() ? (
+              <span>{t("folder.emptySearch")}</span>
+            ) : filter === "starred" ? (
+              <>
+                <Star className="w-6 h-6 text-amber-500/50" strokeWidth={1.5} />
+                <span className="leading-relaxed max-w-[200px]">{t("folder.emptyStarred")}</span>
+              </>
+            ) : filter === "unheard" ? (
+              <span className="leading-relaxed max-w-[200px]">{t("folder.emptyUnheard")}</span>
+            ) : filter === "listened" ? (
+              <span className="leading-relaxed max-w-[200px]">{t("folder.emptyListened")}</span>
+            ) : (
+              <span>{t("folder.emptyList")}</span>
+            )}
           </div>
         ) : (
           files.map((f) => {
@@ -272,8 +288,13 @@ export function Sidebar({
         )}
       </nav>
 
+      {/* Install PWA Button (Chrome/Edge prompt or Safari Dock guide) */}
+      <div className="mt-auto pt-2 pb-1">
+        <InstallButton collapsed={collapsed} />
+      </div>
+
       {/* Bottom Footer: Language & Reset */}
-      <div className="mt-auto flex items-center justify-between pt-1">
+      <div className="flex items-center justify-between pt-1">
         <LanguageToggle />
 
         <button

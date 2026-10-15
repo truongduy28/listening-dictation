@@ -17,6 +17,7 @@ interface ToolbarCardProps {
   onPlaybackRateChange: (rate: PlaybackRate) => void;
   volume: number; // 0 - 1
   onVolumeChange: (vol: number) => void;
+  onToggleMute?: () => void;
   skipSeconds: number; // 1 - 30
   onSkipSecondsChange: (sec: number) => void;
   repeatCount: number; // 1 - 99
@@ -32,6 +33,7 @@ export function ToolbarCard({
   onPlaybackRateChange,
   volume,
   onVolumeChange,
+  onToggleMute,
   skipSeconds,
   onSkipSecondsChange,
   repeatCount,
@@ -50,7 +52,7 @@ export function ToolbarCard({
 
   return (
     <section
-      aria-label="Cài đặt phát và vòng lặp"
+      aria-label={t("toolbar.toolbarAria")}
       className="bg-[var(--bg-card)] rounded-[24px] p-6 md:px-7 md:py-6 shadow-[var(--shadow-subtle)] border border-[var(--border-card)] flex flex-wrap gap-6 md:gap-7"
     >
       {/* 1. Tốc độ (Speed) */}
@@ -75,11 +77,18 @@ export function ToolbarCard({
         displayValue={`${Math.round(volume * 100)}%`}
         onChange={(val) => onVolumeChange(val / 100)}
         icon={
-          volume === 0 ? (
-            <VolumeX className="w-5 h-5 shrink-0 opacity-60" strokeWidth={1.8} />
-          ) : (
-            <Volume2 className="w-5 h-5 shrink-0" strokeWidth={1.8} />
-          )
+          <button
+            type="button"
+            onClick={onToggleMute}
+            aria-label={volume === 0 ? t("toolbar.unmute") : t("toolbar.mute")}
+            className="cursor-pointer hover:opacity-75 transition-opacity p-0.5 rounded text-[var(--text-primary)]"
+          >
+            {volume === 0 ? (
+              <VolumeX className="w-5 h-5 shrink-0 opacity-60" strokeWidth={1.8} />
+            ) : (
+              <Volume2 className="w-5 h-5 shrink-0" strokeWidth={1.8} />
+            )}
+          </button>
         }
       />
 

@@ -18,16 +18,53 @@ import {
   clearAllStorage,
   DEFAULT_SETTINGS,
 } from "@/lib/storage";
+import { AudioFile } from "@/lib/file-system";
+import {
+  getQueueStatus,
+  getNextQueueFile,
+  getPrevQueueFile,
+} from "@/lib/queue";
 import { useAudioPlayer } from "@/hooks/use-audio-player";
 import { useDictationLoop } from "@/hooks/use-dictation-loop";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useFolderLibrary } from "@/hooks/use-folder-library";
+import { useAbLoop } from "@/hooks/use-ab-loop";
+import { useServiceWorker } from "@/hooks/use-service-worker";
+import { UpdateToast } from "@/components/pwa/update-toast";
+import { useI18n } from "@/lib/i18n";
 
 function DictationAppInner() {
+  const { t } = useI18n();
+  const { hasUpdate, applyUpdate, dismissUpdate } = useServiceWorker();
+
   // 1. Playback & Settings State
   const initialSettings = useMemo(() => getStoredSettings(), []);
   const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(initialSettings.playbackRate);
   const [volume, setVolume] = useState<number>(initialSettings.volume);
+  const lastNonZeroVolumeRef = useRef<number>(initialSettings.volume > 0 ? initialSettings.volume : 1);
+
+  const handleVolumeChange = useCallback((newVol: number) => {
+    setVolume(newVol);
+    if (newVol > 0) {
+      lastNonZeroVolumeRef.current = newVol;
+    }
+    saveStoredSettings({ volume: newVol });
+  }, []);
+
+  const handleToggleMute = useCallback(() => {
+    setVolume((prev) => {
+      let next: number;
+      if (prev > 0) {
+        lastNonZeroVolumeRef.current = prev;
+        next = 0;
+      } else {
+        next = lastNonZeroVolumeRef.current > 0 ? lastNonZeroVolumeRef.current : 1;
+      }
+      saveStoredSettings({ volume: next });
+      return next;
+    });
+  }, []);
+
   const [skipSeconds, setSkipSeconds] = useState<number>(initialSettings.skipSeconds);
   const [repeatCount, setRepeatCount] = useState<number>(initialSettings.repeatCount);
   const [gapSeconds, setGapSeconds] = useState<number>(initialSettings.gapSeconds);
@@ -43,6 +80,18 @@ function DictationAppInner() {
     clearGapTimer,
     resetLoop,
   } = useDictationLoop();
+
+  // 2.5 A-B Repeat Loop Controller
+  const {
+    abLoop,
+    isActive: isAbLoopActive,
+    setA,
+    setB,
+    clear: clearAbLoop,
+    setExplicit: setExplicitAbLoop,
+  } = useAbLoop();
+
+  const handleAbLoopReachedRef = useRef<() => void>(() => {});
 
   // 3. Folder & Files Management
   const folderLib = useFolderLibrary();
@@ -107,10 +156,36 @@ function DictationAppInner() {
   const lastLoadedIdRef = useRef<string | null>(null);
   const replayRef = useRef<() => void>(() => {});
 
+  // 6.5. Active Queue Status & Transition Tracking
+  const queueStatus = useMemo(() => {
+    return getQueueStatus({ queue: filteredFiles, currentFile });
+  }, [filteredFiles, currentFile]);
+
+  const prevFilterRef = useRef(filter);
+  const prevSearchRef = useRef(searchQuery);
+  const filterChangedPendingAdvanceRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    const filterChanged =
+      prevFilterRef.current !== filter || prevSearchRef.current !== searchQuery;
+    prevFilterRef.current = filter;
+    prevSearchRef.current = searchQuery;
+
+    if (filterChanged) {
+      const isStillInQueue =
+        currentFile && filteredFiles.some((f) => f.id === currentFile.id);
+      if (!isStillInQueue) {
+        filterChangedPendingAdvanceRef.current = true;
+      }
+    }
+  }, [filter, searchQuery, currentFile, filteredFiles]);
+
   // 7. Navigation & Track Selection Handlers
   const handleSelectFile = useCallback(
     (id: string, autoPlay: boolean = true) => {
       clearGapTimer();
+      clearAbLoop();
+      filterChangedPendingAdvanceRef.current = false;
       if (id === currentFileId) {
         replayRef.current();
         return;
@@ -119,26 +194,36 @@ function DictationAppInner() {
       shouldAutoPlayRef.current = autoPlay;
       selectFile(id);
     },
-    [clearGapTimer, currentFileId, resetLoop, selectFile]
+    [clearGapTimer, clearAbLoop, currentFileId, resetLoop, selectFile]
   );
 
   const handlePrev = useCallback(() => {
     clearGapTimer();
-    if (!currentFile) return;
-    const currentIndex = files.findIndex((f) => f.id === currentFile.id);
-    if (currentIndex > 0) {
-      handleSelectFile(files[currentIndex - 1].id, true);
+    filterChangedPendingAdvanceRef.current = false;
+    const prev = getPrevQueueFile(filteredFiles, currentFile);
+    if (prev) {
+      handleSelectFile(prev.id, true);
     }
-  }, [clearGapTimer, currentFile, files, handleSelectFile]);
+  }, [clearGapTimer, currentFile, filteredFiles, handleSelectFile]);
 
   const handleNext = useCallback(() => {
     clearGapTimer();
-    if (!currentFile) return;
-    const currentIndex = files.findIndex((f) => f.id === currentFile.id);
-    if (currentIndex < files.length - 1) {
-      handleSelectFile(files[currentIndex + 1].id, true);
+    const fallbackToFirst =
+      filterChangedPendingAdvanceRef.current || !queueStatus.isInQueue;
+    filterChangedPendingAdvanceRef.current = false;
+    const next = getNextQueueFile(filteredFiles, currentFile, {
+      fallbackToFirst,
+    });
+    if (next) {
+      handleSelectFile(next.id, true);
     }
-  }, [clearGapTimer, currentFile, files, handleSelectFile]);
+  }, [
+    clearGapTimer,
+    currentFile,
+    filteredFiles,
+    handleSelectFile,
+    queueStatus.isInQueue,
+  ]);
 
   // 8. Dictation Loop Completion Handler
   const handleAudioEnded = useCallback(() => {
@@ -156,11 +241,17 @@ function DictationAppInner() {
     // Mark file as completed
     markListened(currentFile.id);
 
-    // Auto-advance to next track if enabled
+    // Auto-advance to next track in queue if enabled
     if (autoNext) {
-      const currentIndex = files.findIndex((f) => f.id === currentFile.id);
-      if (currentIndex >= 0 && currentIndex < files.length - 1) {
-        const nextFile = files[currentIndex + 1];
+      let nextFile: AudioFile | null = null;
+      if (filterChangedPendingAdvanceRef.current) {
+        filterChangedPendingAdvanceRef.current = false;
+        nextFile = filteredFiles.length > 0 ? filteredFiles[0] : null;
+      } else {
+        nextFile = getNextQueueFile(filteredFiles, currentFile);
+      }
+
+      if (nextFile) {
         startGapWait(gapSeconds, () => {
           resetLoop();
           shouldAutoPlayRef.current = true;
@@ -170,7 +261,7 @@ function DictationAppInner() {
       }
     }
 
-    // Finished without auto-next
+    // Finished without auto-next or reached end of queue
     resetLoop();
   }, [
     currentFile,
@@ -179,7 +270,7 @@ function DictationAppInner() {
     repeatCount,
     markListened,
     autoNext,
-    files,
+    filteredFiles,
     startGapWait,
     gapSeconds,
     setCurrentRepeat,
@@ -202,6 +293,8 @@ function DictationAppInner() {
   const {
     waveformContainerRef,
     isPlaying,
+    currentTime,
+    duration,
     currentTimeFormatted,
     totalTimeFormatted,
     progressPercent,
@@ -209,20 +302,40 @@ function DictationAppInner() {
     hasError,
     loadFile,
     togglePlay,
+    play,
+    pause,
+    seek,
     seekToPercent,
     skip,
     replay,
-    pause,
   } = useAudioPlayer({
     playbackRate,
     volume,
+    abLoop,
     onEnded: handleAudioEnded,
     onProgress: handleAudioProgress,
+    onAbLoopReached: () => handleAbLoopReachedRef.current?.(),
   });
 
   useEffect(() => {
     replayRef.current = replay;
   }, [replay]);
+
+  // Handle A-B loop reaching point B
+  useEffect(() => {
+    handleAbLoopReachedRef.current = () => {
+      if (abLoop.a === null) return;
+      if (gapSeconds > 0) {
+        pause();
+        startGapWait(gapSeconds, () => {
+          seek(abLoop.a!);
+          play();
+        });
+      } else {
+        seek(abLoop.a);
+      }
+    };
+  }, [abLoop.a, gapSeconds, pause, play, seek, startGapWait]);
 
   // Load audio file whenever currentFile changes
   useEffect(() => {
@@ -245,8 +358,27 @@ function DictationAppInner() {
   const handleReplay = useCallback(() => {
     clearGapTimer();
     resetLoop();
-    replay();
-  }, [clearGapTimer, resetLoop, replay]);
+    if (isAbLoopActive && abLoop.a !== null) {
+      seek(abLoop.a);
+      play();
+    } else {
+      replay();
+    }
+  }, [clearGapTimer, resetLoop, isAbLoopActive, abLoop.a, seek, play, replay]);
+
+  const handleSetA = useCallback(() => {
+    if (!currentFile) return;
+    setA(currentTime, duration);
+  }, [currentFile, setA, currentTime, duration]);
+
+  const handleSetB = useCallback(() => {
+    if (!currentFile) return;
+    setB(currentTime, duration);
+  }, [currentFile, setB, currentTime, duration]);
+
+  const handleClearAB = useCallback(() => {
+    clearAbLoop();
+  }, [clearAbLoop]);
 
   const handleRewind = useCallback(() => {
     clearGapTimer();
@@ -278,6 +410,19 @@ function DictationAppInner() {
     }
   }, [playbackRate]);
 
+  const handleToggleStarCurrent = useCallback(() => {
+    if (currentFile) {
+      toggleStar(currentFile.id);
+    }
+  }, [currentFile, toggleStar]);
+
+  const handleQueueClick = useCallback(() => {
+    if (sidebarCollapsed) {
+      setSidebarCollapsed(false);
+      saveStoredSettings({ sidebarCollapsed: false });
+    }
+  }, [sidebarCollapsed]);
+
   // 11. Global Keyboard Shortcuts
   useKeyboardShortcuts({
     disabled: isResetOpen || isShortcutsOpen || !hasFolder || files.length === 0,
@@ -289,11 +434,17 @@ function DictationAppInner() {
     onSpeedDown: handleSpeedDown,
     onSpeedUp: handleSpeedUp,
     onReplay: handleReplay,
+    onToggleStar: handleToggleStarCurrent,
+    onToggleMute: handleToggleMute,
+    onSetA: handleSetA,
+    onSetB: handleSetB,
+    onClearAB: handleClearAB,
   });
 
   // 12. Reset Confirmation Flow
   const handleResetConfirm = async () => {
     clearGapTimer();
+    clearAbLoop();
     pause();
     setIsResetOpen(false);
     lastLoadedIdRef.current = null;
@@ -328,8 +479,22 @@ function DictationAppInner() {
 
         <WelcomeScreen
           onOpenFolder={openFolder}
+          onOpenShortcuts={() => setIsShortcutsOpen(true)}
           isSafari={isSafari}
           isLoading={isLoading}
+        />
+
+        {/* Keyboard Shortcuts Dialog */}
+        <ShortcutsDialog
+          isOpen={isShortcutsOpen}
+          onClose={() => setIsShortcutsOpen(false)}
+        />
+
+        {/* PWA Update Toast */}
+        <UpdateToast
+          isOpen={hasUpdate}
+          onApplyUpdate={applyUpdate}
+          onDismiss={dismissUpdate}
         />
       </>
     );
@@ -372,7 +537,7 @@ function DictationAppInner() {
 
       {/* Main Player Workspace */}
       <main
-        aria-label="Trình phát nghe chép"
+        aria-label={t("app.mainPlayerAria")}
         className="flex-[999_1_560px] min-w-0 max-w-[1120px] mx-auto w-full box-border px-6 py-7 md:px-12 md:py-9 flex flex-col gap-5"
       >
         {/* Permission needed banner (for Chrome/Edge reload) */}
@@ -386,15 +551,20 @@ function DictationAppInner() {
         {/* Current Track Header */}
         <TrackHeader
           currentFile={currentFile}
-          totalFiles={files.length}
-          onToggleStar={() => currentFile && toggleStar(currentFile.id)}
+          queueIndex={queueStatus.current}
+          queueTotal={queueStatus.total}
+          filter={filter}
+          searchQuery={searchQuery}
+          onToggleStar={handleToggleStarCurrent}
           onOpenShortcuts={() => setIsShortcutsOpen(true)}
+          onQueueClick={handleQueueClick}
         />
 
         {/* Audio Player Card (WaveSurfer + Transport Controls) */}
         <PlayerCard
           waveformContainerRef={waveformContainerRef}
           isPlaying={isPlaying}
+          disabled={!currentFile || (filteredFiles.length === 0 && !isPlaying)}
           onTogglePlay={handleTogglePlay}
           onReplay={handleReplay}
           onPrev={handlePrev}
@@ -417,6 +587,16 @@ function DictationAppInner() {
           gapCountdown={gapCountdown}
           isLargeFile={isLargeFile}
           hasError={hasError}
+          abLoop={abLoop}
+          onSetA={handleSetA}
+          onSetB={handleSetB}
+          onClearAB={handleClearAB}
+          duration={duration}
+          onUpdateAbLoop={setExplicitAbLoop}
+          onSeek={(t) => {
+            clearGapTimer();
+            seek(t);
+          }}
         />
 
         {/* Toolbar Card (Playback Rate, Volume, Skip, Repeat, Gap, Auto-next) */}
@@ -427,10 +607,8 @@ function DictationAppInner() {
             saveStoredSettings({ playbackRate: r });
           }}
           volume={volume}
-          onVolumeChange={(v) => {
-            setVolume(v);
-            saveStoredSettings({ volume: v });
-          }}
+          onVolumeChange={handleVolumeChange}
+          onToggleMute={handleToggleMute}
           skipSeconds={skipSeconds}
           onSkipSecondsChange={(s) => {
             setSkipSeconds(s);
@@ -467,6 +645,13 @@ function DictationAppInner() {
       <ShortcutsDialog
         isOpen={isShortcutsOpen}
         onClose={() => setIsShortcutsOpen(false)}
+      />
+
+      {/* PWA Update Toast */}
+      <UpdateToast
+        isOpen={hasUpdate}
+        onApplyUpdate={applyUpdate}
+        onDismiss={dismissUpdate}
       />
     </div>
   );

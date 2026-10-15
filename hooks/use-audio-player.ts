@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import WaveSurfer from "wavesurfer.js";
+import { AbLoop, isAbLoopActive } from "@/lib/abLoop";
 
 export const MAX_WAVEFORM_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
@@ -31,25 +32,43 @@ function getServerSnapshot(): boolean {
 interface UseAudioPlayerOptions {
   playbackRate: number;
   volume: number;
+  abLoop?: AbLoop;
   onEnded?: () => void;
   onProgress?: (progressPercent: number, currentTime: number, duration: number) => void;
+  onAbLoopReached?: () => void;
 }
 
 export function useAudioPlayer({
   playbackRate,
   volume,
+  abLoop,
   onEnded,
   onProgress,
+  onAbLoopReached,
 }: UseAudioPlayerOptions) {
   const isDarkMode = useSyncExternalStore(subscribeDarkMode, getDarkModeSnapshot, getServerSnapshot);
 
   // Single shared audio element ref
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const currentUrlRef = useRef<string | null>(null);
-  const waveformContainerRef = useRef<HTMLDivElement | null>(null);
+  const [containerNode, setContainerNode] = useState<HTMLDivElement | null>(null);
   const waveSurferRef = useRef<WaveSurfer | null>(null);
+
+  const waveformContainerRef = useCallback((node: HTMLDivElement | null) => {
+    setContainerNode(node);
+  }, []);
   const onEndedRef = useRef(onEnded);
   const onProgressRef = useRef(onProgress);
+  const abLoopRef = useRef<AbLoop | undefined>(abLoop);
+  const onAbLoopReachedRef = useRef(onAbLoopReached);
+
+  useEffect(() => {
+    abLoopRef.current = abLoop;
+  }, [abLoop]);
+
+  useEffect(() => {
+    onAbLoopReachedRef.current = onAbLoopReached;
+  }, [onAbLoopReached]);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -116,6 +135,9 @@ export function useAudioPlayer({
       setHasError(false);
       audio.preservesPitch = true;
       audio.playbackRate = playbackRateRef.current;
+      if (audio.duration && audio.duration > 0) {
+        setDuration(audio.duration);
+      }
     };
     const handleEnded = () => {
       setIsPlaying(false);
@@ -186,13 +208,46 @@ export function useAudioPlayer({
     audio.volume = Math.max(0, Math.min(1, volume));
   }, [volume]);
 
+  // High-precision rAF loop for A-B repeat checking without re-rendering React every frame
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    let rafId: number;
+    let lastTriggerTime = 0;
+
+    const checkLoop = () => {
+      const audio = audioRef.current;
+      if (!audio || audio.paused) return;
+
+      const loop = abLoopRef.current;
+      if (loop && isAbLoopActive(loop)) {
+        const curTime = audio.currentTime;
+        // Trigger loop when reaching B - 0.05
+        if (curTime >= loop.b! - 0.05) {
+          const now = performance.now();
+          if (now - lastTriggerTime > 200) {
+            lastTriggerTime = now;
+            if (onAbLoopReachedRef.current) {
+              onAbLoopReachedRef.current();
+            }
+          }
+        }
+      }
+
+      rafId = requestAnimationFrame(checkLoop);
+    };
+
+    rafId = requestAnimationFrame(checkLoop);
+    return () => cancelAnimationFrame(rafId);
+  }, [isPlaying]);
+
   // WaveSurfer colors based on theme
   const waveColor = isDarkMode ? "#48484a" : "#c7c7cc";
   const progressColor = isDarkMode ? "#f5f5f7" : "#1d1d1f";
 
   // Re-create or initialize WaveSurfer when container or theme changes
   useEffect(() => {
-    const container = waveformContainerRef.current;
+    const container = containerNode;
     const audio = audioRef.current;
 
     if (!container || !audio || !hasFile || isLargeFile || hasError) {
@@ -203,49 +258,77 @@ export function useAudioPlayer({
       return;
     }
 
-    try {
-      if (waveSurferRef.current) {
-        waveSurferRef.current.destroy();
-        waveSurferRef.current = null;
-      }
+    let destroyed = false;
+    let wsInstance: WaveSurfer | null = null;
 
-      const ws = WaveSurfer.create({
-        container,
-        media: audio,
-        height: 132,
-        waveColor,
-        progressColor,
-        barWidth: 3,
-        barGap: 3,
-        barRadius: 3,
-        cursorWidth: 0,
-        normalize: true,
-        interact: true,
-      });
+    const setupWaveSurfer = () => {
+      if (destroyed) return;
+      try {
+        if (waveSurferRef.current) {
+          waveSurferRef.current.destroy();
+          waveSurferRef.current = null;
+        }
 
-      ws.on("error", (err) => {
-        console.warn("WaveSurfer warning:", err);
-      });
+        const ws = WaveSurfer.create({
+          container,
+          media: audio,
+          url: currentUrlRef.current || undefined,
+          height: 132,
+          waveColor,
+          progressColor,
+          barWidth: 3,
+          barGap: 3,
+          barRadius: 3,
+          cursorWidth: 0,
+          normalize: true,
+          interact: true,
+        });
 
-      waveSurferRef.current = ws;
+        ws.on("error", (err) => {
+          console.warn("WaveSurfer warning:", err);
+        });
 
-      // If we already have a loaded object URL, load it into WaveSurfer
-      if (currentUrlRef.current) {
-        ws.load(currentUrlRef.current).catch((err) => {
-          if (err?.name !== "AbortError") {
-            console.warn("WaveSurfer load error:", err);
+        ws.on("decode", (dur) => {
+          if (dur && dur > 0) {
+            setDuration(dur);
           }
         });
-      }
 
+        ws.on("ready", (dur) => {
+          if (dur && dur > 0) {
+            setDuration(dur);
+          }
+        });
+
+        wsInstance = ws;
+        waveSurferRef.current = ws;
+      } catch (err) {
+        console.warn("WaveSurfer creation error:", err);
+      }
+    };
+
+    // If container is mounted but not yet laid out (clientWidth === 0), wait one animation frame
+    if (container.clientWidth === 0) {
+      const raf = requestAnimationFrame(setupWaveSurfer);
       return () => {
-        ws.destroy();
-        waveSurferRef.current = null;
+        destroyed = true;
+        cancelAnimationFrame(raf);
+        if (wsInstance) {
+          wsInstance.destroy();
+          waveSurferRef.current = null;
+        }
       };
-    } catch (err) {
-      console.warn("WaveSurfer creation error:", err);
+    } else {
+      setupWaveSurfer();
+      return () => {
+        destroyed = true;
+        if (wsInstance) {
+          wsInstance.destroy();
+          waveSurferRef.current = null;
+        }
+      };
     }
-  }, [hasFile, isLargeFile, hasError, waveColor, progressColor]);
+  }, [containerNode, hasFile, isLargeFile, hasError, waveColor, progressColor]);
 
   // Load a new file into the audio element
   const loadFile = useCallback((file: File, autoPlay: boolean = false) => {

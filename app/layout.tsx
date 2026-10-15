@@ -2,10 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
-  ],
+  themeColor: "#f5f5f7",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -64,6 +61,21 @@ export const metadata: Metadata = {
     title: "Nghe chép — Audio Dictation Player",
     description:
       "Trình phát audio chuyên dụng cho luyện nghe chép chính tả (dictation, ETS TOEIC). Hoạt động 100% offline, lặp câu linh hoạt và phím tắt thông minh.",
+  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Nghe chép",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/favicon.svg",
+    apple: "/icons/apple-touch-icon.png",
   },
 };
 

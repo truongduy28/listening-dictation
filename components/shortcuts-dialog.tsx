@@ -19,6 +19,10 @@ export function ShortcutsDialog({ isOpen, onClose }: ShortcutsDialogProps) {
     { key: "↑ / ↓", desc: t("shortcuts.arrowsUD") },
     { key: "[ / ]", desc: t("shortcuts.brackets") },
     { key: "R", desc: t("shortcuts.keyR") },
+    { key: "S", desc: t("shortcuts.keyS") },
+    { key: "M", desc: t("shortcuts.keyM") },
+    { key: "A / B", desc: t("shortcuts.abLoop") },
+    { key: "X", desc: t("shortcuts.clearAb") },
   ];
 
   return (

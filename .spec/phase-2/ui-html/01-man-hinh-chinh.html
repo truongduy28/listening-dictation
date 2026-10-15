@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trình phát nghe chép — giao diện sáng</title>
+<style>
+
+body{margin:0}
+button{font-family:inherit;cursor:pointer}
+.ghost{border:0;background:transparent;color:#1d1d1f}
+.ghost:hover{background:rgba(0,0,0,.06)}
+.row{border:0;background:transparent;color:#1d1d1f}
+.row:hover{background:rgba(0,0,0,.05)}
+.row.on,.row.on:hover{background:#1d1d1f;color:#fff}
+.seg{border:0;background:transparent;color:#3a3a3c}
+.seg.on{background:#fff;color:#1d1d1f;box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.pill{border:1px solid #d2d2d7;background:#fff;color:#1d1d1f}
+.pill.on{background:#1d1d1f;border-color:#1d1d1f;color:#fff}
+label:focus-within{outline:2px solid #0071e3;outline-offset:1px}
+button:focus-visible,input:focus-visible{outline:2px solid #0071e3;outline-offset:2px}
+
+</style>
+</head>
+<body>
+<div style="position:relative;width:100%;min-height:880px;box-sizing:border-box;display:flex;flex-wrap:wrap;background:#f5f5f7;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+
+<aside style="flex:0 0 320px;max-width:100%;box-sizing:border-box;background:#fff;border-right:1px solid #e5e5ea;padding:20px 16px 16px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:32px;height:32px;border-radius:9px;background:#1d1d1f;display:grid;place-items:center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 10v4M9 6v12M13 9v6M17 4v16M21 11v2"></path></svg>
+</div>
+<span style="font-size:17px;font-weight:600;letter-spacing:-0.01em">Nghe chép</span>
+</div>
+<div style="display:flex;gap:2px">
+<button type="button" class="ghost" aria-label="Cài đặt thư mục" style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"></path><circle cx="16" cy="7" r="2"></circle><circle cx="8" cy="17" r="2"></circle></svg>
+</button>
+<button type="button" class="ghost" aria-label="Thu gọn thanh bên" style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"></rect><path d="M9.5 4.5v15"></path></svg>
+</button>
+</div>
+</div>
+
+<div style="background:#f5f5f7;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:38px;height:38px;border-radius:11px;background:#fff;display:grid;place-items:center;box-shadow:0 1px 2px rgba(0,0,0,.08)">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">ETS_TOEIC_Test03</div>
+<div style="font-size:12px;color:#6e6e73;margin-top:1px">100 tệp · 11 đã nghe</div>
+</div>
+<button type="button" class="ghost" style="height:30px;padding:0 10px;border-radius:8px;font-size:13px;font-weight:500">Đổi</button>
+</div>
+<div style="height:4px;border-radius:2px;background:#e5e5ea"><div style="width:11%;height:4px;border-radius:2px;background:#1d1d1f"></div></div>
+</div>
+
+<label style="display:flex;align-items:center;gap:8px;height:38px;padding:0 12px;border-radius:12px;background:#f5f5f7;color:#6e6e73">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.5 4.5"></path></svg>
+<input type="search" placeholder="Tìm tệp…" aria-label="Tìm tệp" style="flex:1;min-width:0;border:0;background:transparent;outline:none;font:inherit;font-size:14px;color:#1d1d1f">
+</label>
+
+<div style="display:flex;background:#ececf0;border-radius:10px;padding:2px;gap:2px">
+
+<button type="button" class="seg " style="flex:1 1 auto;height:30px;border-radius:8px;font-size:12px;font-weight:500;padding:0 8px;white-space:nowrap">Tất cả</button>
+
+<button type="button" class="seg " style="flex:1 1 auto;height:30px;border-radius:8px;font-size:12px;font-weight:500;padding:0 8px;white-space:nowrap">Chưa nghe</button>
+
+<button type="button" class="seg " style="flex:1 1 auto;height:30px;border-radius:8px;font-size:12px;font-weight:500;padding:0 8px;white-space:nowrap">Đã nghe</button>
+
+<button type="button" class="seg on" style="flex:1 1 auto;height:30px;border-radius:8px;font-size:12px;font-weight:500;padding:0 8px;white-space:nowrap">Gắn sao</button>
+
+</div>
+
+<div style="flex:1 1 auto;min-height:0;max-height:470px;overflow:auto;display:flex;flex-direction:column;gap:2px;margin:0 -4px;padding:0 4px">
+
+<button type="button" class="row " style="display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;text-align:left;padding:9px 12px;border-radius:12px;font-size:14px;flex:0 0 auto">
+<span style="width:28px;font-size:12px;font-variant-numeric:tabular-nums;opacity:.6">003</span>
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Test03_Q003.mp3</span>
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.55" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.7 2.7L16 9.5"></path></svg>
+
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+
+</button>
+
+<button type="button" class="row " style="display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;text-align:left;padding:9px 12px;border-radius:12px;font-size:14px;flex:0 0 auto">
+<span style="width:28px;font-size:12px;font-variant-numeric:tabular-nums;opacity:.6">009</span>
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Test03_Q009.mp3</span>
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.55" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.7 2.7L16 9.5"></path></svg>
+
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+
+</button>
+
+<button type="button" class="row on" style="display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;text-align:left;padding:9px 12px;border-radius:12px;font-size:14px;flex:0 0 auto">
+<span style="width:28px;font-size:12px;font-variant-numeric:tabular-nums;opacity:.6">012</span>
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Test03_Q012.mp3</span>
+
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+
+</button>
+
+<button type="button" class="row " style="display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;text-align:left;padding:9px 12px;border-radius:12px;font-size:14px;flex:0 0 auto">
+<span style="width:28px;font-size:12px;font-variant-numeric:tabular-nums;opacity:.6">021</span>
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Test03_Q021.mp3</span>
+
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+
+</button>
+
+<button type="button" class="row " style="display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;text-align:left;padding:9px 12px;border-radius:12px;font-size:14px;flex:0 0 auto">
+<span style="width:28px;font-size:12px;font-variant-numeric:tabular-nums;opacity:.6">034</span>
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Test03_Q034.mp3</span>
+
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+
+</button>
+
+<button type="button" class="row " style="display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;text-align:left;padding:9px 12px;border-radius:12px;font-size:14px;flex:0 0 auto">
+<span style="width:28px;font-size:12px;font-variant-numeric:tabular-nums;opacity:.6">047</span>
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Test03_Q047.mp3</span>
+
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+
+</button>
+
+<button type="button" class="row " style="display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;text-align:left;padding:9px 12px;border-radius:12px;font-size:14px;flex:0 0 auto">
+<span style="width:28px;font-size:12px;font-variant-numeric:tabular-nums;opacity:.6">058</span>
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Test03_Q058.mp3</span>
+
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+
+</button>
+
+</div>
+
+<button type="button" class="ghost" style="margin-top:auto;height:42px;border-radius:12px;background:#f5f5f7;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:500">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 11L12 15.5 16.5 11"></path><path d="M5 19h14"></path></svg>
+Cài đặt ứng dụng
+</button>
+<div style="display:flex;align-items:center;justify-content:space-between;padding-top:4px">
+<div style="display:flex;background:#ececf0;border-radius:9px;padding:2px;gap:2px">
+<button type="button" class="seg on" style="height:28px;padding:0 12px;border-radius:7px;font-size:12px;font-weight:600">VI</button>
+<button type="button" class="seg" style="height:28px;padding:0 12px;border-radius:7px;font-size:12px;font-weight:600">EN</button>
+</div>
+<button type="button" class="ghost" style="height:34px;padding:0 12px;border-radius:10px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:#d70015">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4v6h6"></path><path d="M5.6 14a7.5 7.5 0 1 0 1.2-7.4L4 10"></path></svg>
+Đặt lại
+</button>
+</div>
+</aside>
+
+<main style="flex:999 1 560px;min-width:0;max-width:1120px;margin:0 auto;width:100%;box-sizing:border-box;padding:36px 48px;display:flex;flex-direction:column;gap:20px">
+
+<header style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+<div>
+<div style="font-size:13px;color:#6e6e73">Đang phát · 3 / 7</div>
+<h1 style="margin:2px 0 0;font-size:30px;line-height:1.15;letter-spacing:-0.02em;font-weight:600">Test03_Q012.mp3</h1>
+<div style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;height:28px;padding:0 12px 0 10px;border-radius:14px;background:#fff;border:1px solid #e5e5ea;font-size:12.5px;font-weight:500;color:#3a3a3c">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+Hàng đợi: Gắn sao · 7 câu · Ngẫu nhiên
+</div>
+</div>
+<div style="display:flex;gap:4px">
+<button type="button" class="ghost" aria-label="Bỏ sao câu này" style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"></path></svg>
+</button>
+<button type="button" class="ghost" aria-label="Xem phím tắt" style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"></rect><path d="M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M7.5 14h9"></path></svg>
+</button>
+</div>
+</header>
+
+<section style="background:#fff;border-radius:28px;padding:28px 32px 24px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:14px">
+<div style="position:relative;padding-top:22px">
+<div style="display:flex;align-items:center;gap:3px;height:132px" aria-label="Sóng âm, đã phát 45%, đoạn lặp từ 0:04 đến 0:09" role="img">
+
+<div style="flex:1 1 0;min-width:2px;height:14px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:18px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:24px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:25px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:20px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:27px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:29px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:22px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:33px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:36px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:29px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:52px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:69px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:66px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:44px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:43px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:56px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:45px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:43px;border-radius:3px;background:#1d1d1f;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:56px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:43px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:62px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:95px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:102px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:76px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:41px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:70px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:69px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:43px;border-radius:3px;background:#1d1d1f;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:59px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:59px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:50px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:91px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:113px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:97px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:54px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:64px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:77px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:59px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:45px;border-radius:3px;background:#c7c7cc;opacity:1"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:58px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:41px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:66px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:93px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:92px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:63px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:42px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:63px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:58px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:37px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:41px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:38px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:36px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:55px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:60px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:47px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:27px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:34px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:35px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:26px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:20px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:20px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:17px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+<div style="flex:1 1 0;min-width:2px;height:17px;border-radius:3px;background:#c7c7cc;opacity:0.4"></div>
+
+</div>
+<div aria-hidden="true" style="position:absolute;left:30%;width:32%;top:22px;height:132px;background:rgba(29,29,31,.07);border-radius:10px;pointer-events:none"></div>
+<div aria-hidden="true" style="position:absolute;left:30%;top:0;width:0;height:154px">
+<div style="position:absolute;left:-20px;top:0;height:18px;padding:0 7px;border-radius:9px;background:#1d1d1f;color:#fff;font-size:11px;font-weight:600;line-height:18px;font-variant-numeric:tabular-nums">A 0:04</div>
+<div style="position:absolute;left:-2px;top:22px;width:4px;height:132px;border-radius:2px;background:#1d1d1f"></div>
+</div>
+<div aria-hidden="true" style="position:absolute;left:62%;top:0;width:0;height:154px">
+<div style="position:absolute;left:-20px;top:0;height:18px;padding:0 7px;border-radius:9px;background:#1d1d1f;color:#fff;font-size:11px;font-weight:600;line-height:18px;font-variant-numeric:tabular-nums">B 0:09</div>
+<div style="position:absolute;left:-2px;top:22px;width:4px;height:132px;border-radius:2px;background:#1d1d1f"></div>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;font-variant-numeric:tabular-nums;color:#6e6e73">
+<span>0:07</span>
+<span style="background:#f5f5f7;border-radius:999px;padding:3px 10px;font-weight:600;color:#1d1d1f">45%</span>
+<span>0:15</span>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:6px 0">
+<button type="button" class="ghost" aria-label="Phát lại từ đầu (R)" style="width:48px;height:48px;border-radius:50%;display:grid;place-items:center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4v6h6"></path><path d="M5.6 14a7.5 7.5 0 1 0 1.2-7.4L4 10"></path></svg>
+</button>
+<button type="button" class="ghost" aria-label="Tệp trước (mũi tên lên)" style="width:52px;height:52px;border-radius:50%;display:grid;place-items:center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v14" fill="none"></path><path d="M19 5.5v13L9 12z"></path></svg>
+</button>
+<button type="button" class="ghost" aria-label="Tua lùi 5 giây (mũi tên trái)" style="width:52px;height:52px;border-radius:50%;display:grid;place-items:center">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><text x="12" y="15.6" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor" stroke="none" font-family="-apple-system,system-ui,sans-serif">5</text></svg>
+</button>
+<button type="button" aria-label="Phát hoặc dừng (Space)" style="width:76px;height:76px;border-radius:50%;border:0;background:#1d1d1f;color:#fff;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.25)">
+
+<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="3.8" height="14" rx="1.2"></rect><rect x="13.7" y="5" width="3.8" height="14" rx="1.2"></rect></svg>
+
+
+</button>
+<button type="button" class="ghost" aria-label="Tua tới 5 giây (mũi tên phải)" style="width:52px;height:52px;border-radius:50%;display:grid;place-items:center">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 4v5h-5"></path><text x="12" y="15.6" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor" stroke="none" font-family="-apple-system,system-ui,sans-serif">5</text></svg>
+</button>
+<button type="button" class="ghost" aria-label="Tệp sau (mũi tên xuống)" style="width:52px;height:52px;border-radius:50%;display:grid;place-items:center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 5v14" fill="none"></path><path d="M5 5.5v13L15 12z"></path></svg>
+</button>
+<button type="button" aria-pressed="true" aria-label="Phát ngẫu nhiên, đang bật (M)" style="width:48px;height:48px;border:0;border-radius:50%;background:#1d1d1f;color:#fff;display:grid;place-items:center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3c3 0 4.5 2 6 5s3 5 6 5h3"></path><path d="M3 17h3c1.5 0 2.7-.7 3.6-1.8"></path><path d="M15.4 8.8C16.3 7.7 17.5 7 19 7h2"></path><path d="M18 4l3 3-3 3"></path><path d="M18 14l3 3-3 3"></path></svg>
+</button>
+</div>
+
+<div style="display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap">
+<div style="display:inline-flex;align-items:center;gap:2px;background:#f5f5f7;border-radius:999px;padding:3px" role="group" aria-label="Lặp đoạn A–B">
+<button type="button" aria-label="Điểm A tại 0:04 (phím A)" style="height:32px;padding:0 14px;border:0;border-radius:16px;background:#1d1d1f;color:#fff;font-size:13px;font-weight:600">A</button>
+<button type="button" aria-label="Điểm B tại 0:09 (phím B)" style="height:32px;padding:0 14px;border:0;border-radius:16px;background:#1d1d1f;color:#fff;font-size:13px;font-weight:600">B</button>
+<button type="button" class="ghost" aria-label="Xóa đoạn lặp (phím X)" style="width:32px;height:32px;border-radius:50%;display:grid;place-items:center">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</button>
+</div>
+<div style="display:inline-flex;align-items:center;gap:8px;background:#f5f5f7;border-radius:999px;padding:7px 14px;font-size:13px;color:#3a3a3c">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l3 3-3 3"></path><path d="M4 11V9a3 3 0 0 1 3-3h13"></path><path d="M7 21l-3-3 3-3"></path><path d="M20 13v2a3 3 0 0 1-3 3H4"></path></svg>
+Lặp đoạn 0:04 – 0:09 · nghỉ 2 giây
+</div>
+</div>
+</section>
+
+<section style="background:#fff;border-radius:24px;padding:24px 28px;box-shadow:0 1px 2px rgba(0,0,0,.04);display:flex;flex-wrap:wrap;gap:24px 28px">
+<div style="flex:2 1 320px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:12px;font-weight:600;letter-spacing:.02em;color:#6e6e73">Tốc độ</span>
+<div style="display:flex;gap:6px">
+
+<button type="button" class="pill " style="flex:1;height:40px;border-radius:12px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">0.5×</button>
+
+<button type="button" class="pill " style="flex:1;height:40px;border-radius:12px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">0.75×</button>
+
+<button type="button" class="pill on" style="flex:1;height:40px;border-radius:12px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">1×</button>
+
+<button type="button" class="pill " style="flex:1;height:40px;border-radius:12px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">1.25×</button>
+
+<button type="button" class="pill " style="flex:1;height:40px;border-radius:12px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">1.5×</button>
+
+</div>
+</div>
+<div style="flex:1 1 200px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:12px;font-weight:600;letter-spacing:.02em;color:#6e6e73">Âm lượng</span>
+<div style="display:flex;align-items:center;gap:10px;height:40px;color:#1d1d1f">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"></path><path d="M15.5 9a4 4 0 0 1 0 6"></path></svg>
+<input type="range" min="0" max="100" value="80" aria-label="Âm lượng" style="flex:1;min-width:0;accent-color:#1d1d1f">
+<span style="width:36px;text-align:right;font-size:13px;font-variant-numeric:tabular-nums;color:#6e6e73">80%</span>
+</div>
+</div>
+<div style="flex:1 1 200px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:12px;font-weight:600;letter-spacing:.02em;color:#6e6e73">Tua mỗi lần</span>
+<div style="display:flex;align-items:center;gap:10px;height:40px">
+<input type="range" min="1" max="30" value="5" aria-label="Bước tua (giây)" style="flex:1;min-width:0;accent-color:#1d1d1f">
+<span style="width:48px;text-align:right;font-size:13px;font-variant-numeric:tabular-nums;color:#6e6e73">5 giây</span>
+</div>
+</div>
+<div style="flex:1 1 150px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:12px;font-weight:600;letter-spacing:.02em;color:#6e6e73">Lặp mỗi tệp</span>
+<label style="display:flex;align-items:center;gap:8px;font-size:14px;color:#3a3a3c">
+<input type="number" min="1" max="99" value="3" aria-label="Số lần lặp mỗi tệp" style="width:64px;height:40px;box-sizing:border-box;text-align:center;border:1px solid #d2d2d7;border-radius:12px;background:#fff;font:inherit;font-size:16px;font-variant-numeric:tabular-nums;color:#1d1d1f">
+lần
+</label>
+</div>
+<div style="flex:1 1 150px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:12px;font-weight:600;letter-spacing:.02em;color:#6e6e73">Nghỉ giữa các lần</span>
+<label style="display:flex;align-items:center;gap:8px;font-size:14px;color:#3a3a3c">
+<input type="number" min="0" max="30" value="2" aria-label="Số giây nghỉ" style="width:64px;height:40px;box-sizing:border-box;text-align:center;border:1px solid #d2d2d7;border-radius:12px;background:#fff;font:inherit;font-size:16px;font-variant-numeric:tabular-nums;color:#1d1d1f">
+giây
+</label>
+</div>
+<div style="flex:1 1 150px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:12px;font-weight:600;letter-spacing:.02em;color:#6e6e73">Tự chuyển câu</span>
+<div style="display:flex;align-items:center;gap:10px;height:40px">
+<button type="button" role="switch" aria-checked="true" aria-label="Tự chuyển sang tệp kế" style="width:51px;height:31px;border:0;border-radius:16px;background:#1d1d1f;padding:2px;display:flex;justify-content:flex-end;align-items:center"><span style="width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span></button>
+<span style="font-size:14px;color:#3a3a3c">Bật</span>
+</div>
+</div>
+</section>
+
+<footer style="display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:13px;color:#6e6e73">
+
+<span style="display:inline-flex;align-items:center;gap:6px"><kbd style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:6px;background:#fff;color:#1d1d1f">Space</kbd>Phát / dừng</span>
+
+<span style="display:inline-flex;align-items:center;gap:6px"><kbd style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:6px;background:#fff;color:#1d1d1f">← →</kbd>Tua</span>
+
+<span style="display:inline-flex;align-items:center;gap:6px"><kbd style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:6px;background:#fff;color:#1d1d1f">↑ ↓</kbd>Đổi tệp</span>
+
+<span style="display:inline-flex;align-items:center;gap:6px"><kbd style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:6px;background:#fff;color:#1d1d1f">[ ]</kbd>Tốc độ</span>
+
+<span style="display:inline-flex;align-items:center;gap:6px"><kbd style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:6px;background:#fff;color:#1d1d1f">R</kbd>Phát lại</span>
+
+<span style="display:inline-flex;align-items:center;gap:6px"><kbd style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:6px;background:#fff;color:#1d1d1f">A B</kbd>Đoạn lặp</span>
+
+<span style="display:inline-flex;align-items:center;gap:6px"><kbd style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:6px;background:#fff;color:#1d1d1f">S</kbd>Gắn sao</span>
+
+<span style="display:inline-flex;align-items:center;gap:6px"><kbd style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:2px 8px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:6px;background:#fff;color:#1d1d1f">M</kbd>Ngẫu nhiên</span>
+
+</footer>
+</main>
+<div role="status" style="position:absolute;right:24px;bottom:24px;display:flex;align-items:center;gap:14px;padding:10px 10px 10px 18px;border-radius:18px;background:rgba(29,29,31,.94);color:#fff;font-size:14px;box-shadow:0 14px 34px rgba(0,0,0,.28)">
+<span>Có phiên bản mới</span>
+<button type="button" style="height:34px;padding:0 14px;border:0;border-radius:12px;background:#fff;color:#1d1d1f;font-size:13px;font-weight:600">Tải lại</button>
+</div>
+</div>
+<script>
+(function(){
+  var on='#1d1d1f';
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('button.pill,button.seg');
+    if(b&&b.parentElement){
+      Array.prototype.forEach.call(b.parentElement.children,function(c){if(c.matches&&c.matches('button.pill,button.seg'))c.classList.remove('on');});
+      b.classList.add('on');
+    }
+    var sw=e.target.closest('[role=switch]');
+    if(sw){
+      var v=sw.getAttribute('aria-checked')!=='true';
+      sw.setAttribute('aria-checked',String(v));
+      sw.style.background=v?on:'#d2d2d7';
+      sw.style.justifyContent=v?'flex-end':'flex-start';
+    }
+    var p=e.target.closest('button[aria-label^="Phát hoặc dừng"]');
+    if(p){
+      var playing=p.getAttribute('data-playing')!=='false';
+      var next=!playing;
+      p.setAttribute('data-playing',String(next));
+      p.innerHTML=next
+        ?'<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="3.8" height="14" rx="1.2"/><rect x="13.7" y="5" width="3.8" height="14" rx="1.2"/></svg>'
+        :'<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6a.8.8 0 0 0 1.2.7l11-6.8a.8.8 0 0 0 0-1.4l-11-6.8A.8.8 0 0 0 8 5.2z"/></svg>';
+    }
+  });
+})();</script>
+</body>
+</html>

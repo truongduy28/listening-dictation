@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useI18n } from "@/lib/i18n";
 
 interface NumberFieldProps {
   label: string;
@@ -23,6 +24,8 @@ export function NumberField({
   ariaLabel,
   className = "flex-[1_1_150px]",
 }: NumberFieldProps) {
+  const { t } = useI18n();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = Number(e.target.value);
     const clamped = isNaN(raw) ? min : Math.max(min, Math.min(max, raw));
@@ -39,7 +42,7 @@ export function NumberField({
           type="button"
           disabled={value <= min}
           onClick={() => onChange(Math.max(min, value - 1))}
-          aria-label={`Giảm ${label}`}
+          aria-label={t("toolbar.decrease", { label })}
           className="w-8 h-10 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)] flex items-center justify-center text-base font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] active:scale-90 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed select-none"
         >
           −
@@ -57,7 +60,7 @@ export function NumberField({
           type="button"
           disabled={value >= max}
           onClick={() => onChange(Math.min(max, value + 1))}
-          aria-label={`Tăng ${label}`}
+          aria-label={t("toolbar.increase", { label })}
           className="w-8 h-10 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)] flex items-center justify-center text-base font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] active:scale-90 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed select-none"
         >
           +
