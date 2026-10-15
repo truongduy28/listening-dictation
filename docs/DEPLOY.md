@@ -11,8 +11,8 @@ Tài liệu này hướng dẫn chi tiết quy trình triển khai **Listening D
 | Thiết lập trên Vercel | Giá trị cấu hình |
 |---|---|
 | **Framework Preset** | `Next.js` |
-| **Build Command** | `npm run build` |
-| **Output Directory** | `out` |
+| **Build Command** | `npm run build` (hoặc để mặc định) |
+| **Output Directory** | **Để mặc định (KHÔNG ghi đè)** — Next.js tự động nhận diện `output: 'export'` |
 | **Install Command** | `npm install` |
 | **Node.js Version** | `20.x` hoặc `22.x` |
 | **Environment Variables** | **Không có biến môi trường nào** (Ứng dụng chạy client-side 100%, bảo mật tuyệt đối) |

@@ -26,7 +26,7 @@
 
 **Nghe chép** tích hợp sẵn một công cụ **Motion Graphics Studio** độc lập, tái hiện chính xác 100% giao diện thực tế của ứng dụng (Dark Mode chuẩn Apple, Logo 5 vạch sóng âm, Player Card, vùng chọn A–B trực quan) và có thể xuất thẳng thành tệp video HD 1080p (`.webm` / `.mp4`).
 
-- **Xem trực tiếp & Xuất video:** Mở tệp [`public/intro-video.html`](./public/intro-video.html) trên trình duyệt (hoặc truy cập `/intro-video.html` khi đang chạy dev server).
+- **Xem trực tiếp: 
 - **Các phân cảnh trong video:**
   - **Cảnh 1:** Màn hình chào mừng (Welcome Screen) với tiêu đề lớn *"Nghe từng câu. Chép từng chữ."*, nút chọn thư mục và các chip tính năng nổi bật.
   - **Cảnh 2:** Không gian làm việc thực tế gồm Sidebar bên trái (sắp xếp số học tự nhiên `01, 02... 100`, bộ lọc *Tất cả / Chưa nghe / Gắn sao*).
@@ -162,7 +162,7 @@ npx vercel
 ### Cấu hình trên Vercel Dashboard:
 - **Framework Preset:** `Next.js`
 - **Build Command:** `npm run build`
-- **Output Directory:** `out`
+- **Output Directory:** *Để mặc định (KHÔNG ghi đè thành `out` — Vercel tự động nhận diện `output: 'export'`)*
 - **Environment Variables:** *Không cần (bảo mật tuyệt đối, chạy 100% phía client)*
 
 Kho lưu trữ đã có sẵn tệp [`vercel.json`](./vercel.json) với cấu hình chuẩn cho Service Worker (`max-age=0, must-revalidate`), bộ nhớ đệm tài nguyên tĩnh (1 năm `immutable`) và các header bảo mật CSP chặt chẽ.

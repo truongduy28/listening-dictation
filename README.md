@@ -26,7 +26,7 @@
 
 **Nghe chép** includes a built-in, standalone **Motion Graphics Intro Studio** recreating the app's real interface (Apple-style Dark Mode, 5-bar Waveform Logo, Real Player Card, A-B Region Overlay) and exports directly to 1080p HD video (`.webm` / `.mp4`).
 
-- **Live Demo / Generator**: Open [`public/intro-video.html`](./public/intro-video.html) in any browser (or navigate to `/intro-video.html` in dev server).
+- **Live Demo: 
 - **Scenes in the Demo**:
   - **Scene 1**: Welcome Screen with title *"Nghe từng câu. Chép từng chữ."* & floating feature chips.
   - **Scene 2**: Real Workspace layout showing Sidebar with natural numerical sorting (`01, 02... 100`) and Filter tabs (*All / Unheard / Starred*).
@@ -158,7 +158,7 @@ npx vercel
 
 - **Framework Preset:** `Next.js`
 - **Build Command:** `npm run build`
-- **Output Directory:** `out`
+- **Output Directory:** *Default (Do NOT override or set to `out` — Vercel automatically detects Next.js `output: 'export'`)*
 - **Environment Variables:** *None required (100% client-side privacy)*
 
 Includes [`vercel.json`](./vercel.json) with Service Worker no-cache headers, 1-year immutable caching for static assets, and strict CSP headers.
