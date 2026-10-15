@@ -66,7 +66,7 @@ export function useAudioPlayer({
       const isLarge = file.size > MAX_WAVEFORM_FILE_SIZE;
       const objectUrl = engine.loadFile(file, autoPlay);
       if (objectUrl) {
-        loadTrack(objectUrl, isLarge);
+        loadTrack(objectUrl, isLarge, file);
       }
     },
     [engine, loadTrack]

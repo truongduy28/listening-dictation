@@ -27,6 +27,7 @@ export function useWaveform({
   onDurationChange,
 }: UseWaveformOptions) {
   const waveSurferRef = useRef<WaveSurfer | null>(null);
+  const pendingTrackRef = useRef<{ objectUrl: string; isLarge: boolean; blob?: Blob } | null>(null);
 
   const waveColor = isDarkMode ? "#48484a" : "#c7c7cc";
   const progressColor = isDarkMode ? "#f5f5f7" : "#1d1d1f";
@@ -53,10 +54,13 @@ export function useWaveform({
           waveSurferRef.current = null;
         }
 
+        const pending = pendingTrackRef.current;
+        const targetUrl = pending?.objectUrl || audioUrlRef.current || undefined;
+
         const ws = WaveSurfer.create({
           container: containerNode,
           media: audio,
-          url: audioUrlRef.current || undefined,
+          url: pending?.blob ? undefined : targetUrl,
           height: 132,
           waveColor,
           progressColor,
@@ -83,6 +87,16 @@ export function useWaveform({
             onDurationChange(dur);
           }
         });
+
+        if (pending?.blob && !pending.isLarge) {
+          ws.loadBlob(pending.blob).catch((err) => {
+            if (err?.name !== "AbortError") {
+              console.warn("WaveSurfer blob load failed, fallback to URL:", err);
+              if (pending.objectUrl) ws.load(pending.objectUrl).catch(() => {});
+            }
+          });
+        }
+        pendingTrackRef.current = null;
 
         wsInstance = ws;
         waveSurferRef.current = ws;
@@ -120,15 +134,28 @@ export function useWaveform({
     }
   }, [playbackRate]);
 
-  const loadTrack = useCallback((objectUrl: string, isLarge: boolean) => {
+  const loadTrack = useCallback((objectUrl: string, isLarge: boolean, blob?: Blob) => {
     const ws = waveSurferRef.current;
-    if (!ws) return;
+    if (!ws) {
+      pendingTrackRef.current = { objectUrl, isLarge, blob };
+      return;
+    }
+    pendingTrackRef.current = null;
     if (!isLarge) {
-      ws.load(objectUrl).catch((err) => {
-        if (err?.name !== "AbortError") {
-          console.warn("WaveSurfer track change error:", err);
-        }
-      });
+      if (blob) {
+        ws.loadBlob(blob).catch((err) => {
+          if (err?.name !== "AbortError") {
+            console.warn("WaveSurfer blob load failed, fallback to url:", err);
+            ws.load(objectUrl).catch(() => {});
+          }
+        });
+      } else {
+        ws.load(objectUrl).catch((err) => {
+          if (err?.name !== "AbortError") {
+            console.warn("WaveSurfer track change error:", err);
+          }
+        });
+      }
     } else {
       ws.empty();
     }
