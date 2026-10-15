@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useSyncExternalStore } from "react";
+import React, { useSyncExternalStore } from "react";
 import { useI18n } from "@/lib/i18n";
 import { AppBrand } from "@/components/ui/app-brand";
 import { LanguageToggle } from "@/components/ui/language-toggle";
@@ -81,6 +81,25 @@ const PREVIEW_BARS = [
   { height: 15, bg: "#c7c7cc", opacity: 0.45, delay: "0.15s" },
 ];
 
+let cachedNow = 0;
+function subscribeNow(callback: () => void): () => void {
+  const timer = setInterval(() => {
+    cachedNow = Date.now();
+    callback();
+  }, 60000);
+  return () => clearInterval(timer);
+}
+function getClientNow(): number {
+  if (typeof window === "undefined") return 0;
+  if (!cachedNow) {
+    cachedNow = Date.now();
+  }
+  return cachedNow;
+}
+function getServerNow(): number {
+  return 0;
+}
+
 export function WelcomeScreen({
   onOpenFolder,
   onOpenShortcuts,
@@ -96,11 +115,7 @@ export function WelcomeScreen({
     getEmptyRecentFolders
   );
 
-  const [clientNow, setClientNow] = useState<number>(0);
-
-  useEffect(() => {
-    setClientNow(Date.now());
-  }, []);
+  const clientNow = useSyncExternalStore(subscribeNow, getClientNow, getServerNow);
 
   const formatRecentTime = (timestamp: number) => {
     if (!clientNow) return "";
