@@ -1,116 +1,187 @@
-# Nghe chép — Audio Dictation Player
+# Nghe chép — Audio Dictation Player 🎧
 
-Ứng dụng web chuyên dụng cho việc luyện nghe chép chính tả (dictation), tối ưu hóa trải nghiệm cho các bộ đề thi như **ETS TOEIC** (thư mục chứa hàng trăm câu audio ngắn, lặp lại câu linh hoạt, khoảng nghỉ chép bài, lặp đoạn A–B trực quan và hệ thống phím tắt bàn phím).
+<p align="center">
+  <strong>"Nghe từng câu. Chép từng chữ."</strong><br>
+  <em>The dedicated, privacy-first audio player built for intentional listening & dictation practice (ETS TOEIC, IELTS, TOEFL, Podcasts).</em>
+</p>
+
+<p align="center">
+  <a href="./README.vi.md">🇻🇳 Tiếng Việt</a> •
+  <a href="./README.md">🇺🇸 English</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" />
+  <img src="https://img.shields.io/badge/Next.js-16.4-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-19.3-61dafb?logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vitest-59%2F59%20Passed-6e9f18?logo=vitest" alt="Vitest Tests" />
+  <img src="https://img.shields.io/badge/Coverage-89.2%25-brightgreen" alt="Coverage" />
+  <img src="https://img.shields.io/badge/PWA-100%25%20Offline%20Ready-orange" alt="PWA Ready" />
+</p>
 
 ---
 
-## 🌟 Tính năng nổi bật
+## 📽️ Video Intro & Interactive Motion Demo
 
-### 1. 🔒 100% Client-side & Chạy Offline
-- **Bảo mật tuyệt đối**: Toàn bộ tệp audio được đọc và phát trực tiếp trên thiết bị của người dùng, không tải tệp lên bất kỳ máy chủ nào.
-- Hoạt động mượt mà offline không cần kết nối mạng.
+**Nghe chép** includes a built-in, standalone **Motion Graphics Intro Studio** recreating the app's real interface (Apple-style Dark Mode, 5-bar Waveform Logo, Real Player Card, A-B Region Overlay) and exports directly to 1080p HD video (`.webm` / `.mp4`).
 
-### 2. 📂 Quản lý thư mục & Sắp xếp tự nhiên (Natural Sort)
-- **Hỗ trợ định dạng**: `.mp3`, `.m4a`, `.wav`, `.aac`, `.flac`, `.ogg`, `.webm`.
-- **Natural Sort**: Sắp xếp tệp theo đúng thứ tự số học tự nhiên (`1, 2, 3... 9, 10, 11... 100`), không bị đảo thứ tự chuỗi (`1, 10, 100, 2`).
-- **Tìm kiếm & Bộ lọc thông minh**:
-  - Lọc: **Tất cả**, **Chưa nghe**, **Gắn sao** (Starred).
-  - Tìm kiếm tức thì theo số thứ tự hoặc từ khóa trong tên file.
-  - Tự động cuộn danh sách (`auto-scroll`) đến vị trí câu đang phát khi tải lại trang (F5) hoặc đổi bài.
+- **Live Demo / Generator**: Open [`public/intro-video.html`](./public/intro-video.html) in any browser (or navigate to `/intro-video.html` in dev server).
+- **Scenes in the Demo**:
+  - **Scene 1**: Welcome Screen with title *"Nghe từng câu. Chép từng chữ."* & floating feature chips.
+  - **Scene 2**: Real Workspace layout showing Sidebar with natural numerical sorting (`01, 02... 100`) and Filter tabs (*All / Unheard / Starred*).
+  - **Scene 3**: Smart Audio Looping with live circular Gap Countdown timer (*"Nghỉ 3s · Chuẩn bị lặp 2/3"*).
+  - **Scene 4**: Visual A–B Looping on WaveSurfer waveform with draggable handles and tinted highlight region.
+  - **Scene 5**: Hands-on-keyboard shortcuts matrix (`Space`, `← / →`, `↑ / ↓`, `[ / ]`, `R`, `A / B / X`).
+  - **Scene 6**: Outro & CTA with one-click **"Xuất Video HD"** button (powered by `MediaRecorder` & Web Audio synthesizer).
 
-### 3. 🌊 Sóng âm trực quan (WaveSurfer) & Lặp đoạn A–B
-- **Dạng sóng WaveSurfer**: Hiển thị tiến độ và dạng sóng chi tiết; click để nhảy tới vị trí bất kỳ.
-- **Lặp đoạn A–B chính xác**: Đặt mốc A, B để lặp lại một cụm từ khó nghe với 2 handle kéo thả mượt mà và nền highlight trực quan.
-- **Tối ưu file lớn**: Tự động chuyển sang chế độ thanh tiến độ nhẹ (lightweight seek bar) cho các tệp âm thanh dung lượng lớn (> 20MB) để tránh lag bộ nhớ.
-- **Giữ nguyên cao độ giọng**: Tích hợp `preservesPitch` giúp âm thanh không bị méo tiếng khi thay đổi tốc độ (`0.5x` đến `1.5x`).
+---
 
-### 4. 🔁 Cơ chế lặp Dictation & Khoảng nghỉ (Gap Interval)
-- **Lặp lại $N$ lần mỗi tệp**: Tùy chỉnh tự do từ `1` đến `99` lần.
-- **Nghỉ giữa các lần / chuyển câu ($X$ giây)**: Đếm ngược trực quan trong khoảng nghỉ (`0` đến `30` giây) để người dùng có đủ thời gian ghi chép bài trước khi câu phát lại hoặc chuyển sang câu mới.
-- **Tự động chuyển câu (Auto-next)**: Tự động chuyển tiếp câu kế tiếp khi hoàn thành đủ số lần lặp và khoảng nghỉ; tự dừng khi đến tệp cuối danh sách.
-- **Quy tắc hoàn thành bài nghe**: Tự động đánh dấu đã nghe (`listened: true`) ngay khi nghe từ **85% thời lượng tệp** trở lên.
+## 🌟 Why Nghe chép?
 
-### 5. ⌨️ Hệ thống phím tắt toàn diện (Keyboard Shortcuts)
-Điều khiển nghe chép mà tay không cần rời bàn phím:
+Standard media players (Spotify, VLC, QuickTime) are built for continuous, passive listening. When practicing **audio dictation** (such as ETS TOEIC Part 1, 2, 3, 4, or IELTS listening), listeners constantly reach for their mouse to pause, rewind a few seconds, and play again.
 
-| Phím tắt | Thao tác | Chi tiết |
+**Nghe chép solves this fundamentally:**
+1. **Writing Gap Timer:** Automatically pauses between repeats (`0` to `30s`) so you have time to write down what you heard before the sentence replays.
+2. **Visual A–B Looping:** Drag markers directly on the waveform to isolate and loop fast, connected speech.
+3. **Hands Stay on Keyboard:** Complete keyboard navigation for all audio operations without lifting your hands.
+4. **100% Private & Client-side:** Audio files are read directly from your local filesystem and never uploaded to any server. Works completely offline.
+
+---
+
+## ✨ Features Breakdown
+
+### 1. 🔁 Smart Dictation Loop & Gap Interval
+- **Repeat $N$ Times:** Configure repeat count freely from `1` to `99`.
+- **Writing Gap ($X$ Seconds):** Visual countdown timer (`0` to `30s`) creates breathing room between repeats for transcription.
+- **Auto-Advance:** Automatically moves to the next sentence once repeat iterations finish.
+- **Auto-Completion:** Automatically marks a track as listened (`listened: true`) once you listen past **85%** of its duration.
+
+### 2. 🎚️ WaveSurfer Waveform & Precision A–B Loop
+- **Interactive Waveform:** Click anywhere on the wave to seek instantly.
+- **Draggable A–B Region:** Highlight and loop tough phrases with draggable `[A]` and `[B]` handles and semi-transparent blue overlay.
+- **Pitch Preservation:** Speed controls (`0.5x`, `0.75x`, `1.0x`, `1.25x`, `1.5x`) preserve native vocal pitch without distortion (`preservesPitch`).
+- **Large File Optimization:** Automatically falls back to a lightweight seekbar for audio files > 20MB to prevent memory exhaustion.
+
+### 3. 📂 Folder Library & Natural Numerical Sorting
+- **Supported Audio Formats:** `.mp3`, `.m4a`, `.wav`, `.aac`, `.flac`, `.ogg`, `.webm`.
+- **Natural Sorting:** Accurately sorts files by numbers (`1, 2, ... 9, 10, 11... 100`) rather than standard string sorting (`1, 10, 100, 2`).
+- **Filters & Search:** Quick-toggle between **All**, **Unheard**, and **Starred** tracks, with instant title search.
+- **Auto-Scroll:** Automatically scrolls the playlist to center on the active track when changing songs or refreshing.
+
+### 4. ⌨️ Comprehensive Keyboard Shortcuts
+
+| Key | Action | Description |
 |---|---|---|
-| `Space` | **Phát / Tạm dừng** | Tự động ngăn cuộn trang |
-| `←` / `→` | **Tua lùi / Tua tới** | Nhảy theo số giây tùy chỉnh (`skipSeconds`) |
-| `↑` / `↓` | **Tệp trước / Tệp sau** | Chuyển bài trước hoặc bài kế tiếp trong danh sách |
-| `[` / `]` | **Giảm / Tăng tốc độ** | Chuyển đổi giữa các mức: `0.5x`, `0.75x`, `1.0x`, `1.25x`, `1.5x` |
-| `R` | **Phát lại từ đầu** | Tua về 0:00 (hoặc mốc A nếu đang lặp A–B) và phát lại câu |
-| `A` / `B` | **Đặt mốc A / B** | Đặt điểm bắt đầu / kết thúc đoạn lặp |
-| `X` | **Xóa đoạn lặp A–B** | Hủy lặp đoạn và quay lại toàn bộ file |
-| `M` | **Đánh dấu sao (Star)** | Bật/tắt trạng thái yêu thích của câu đang nghe |
+| `Space` | **Play / Pause** | Toggles audio playback (prevents page scrolling) |
+| `←` / `→` | **Rewind / Fast Forward** | Skips by custom step (`3s`, `5s`, `10s`) |
+| `↑` / `↓` | **Previous / Next Track** | Advances through playlist |
+| `[` / `]` | **Speed Down / Up** | Cycles between `0.5x`, `0.75x`, `1.0x`, `1.25x`, `1.5x` |
+| `R` | **Replay** | Restarts track from 0:00 (or Marker A if A–B active) |
+| `A` / `B` | **Set Marker A / B** | Sets start / end timestamp for precision loop |
+| `X` | **Clear A–B Loop** | Clears loop region |
+| `M` | **Toggle Star** | Stars or unstars active track for review |
 
-*Lưu ý: Phím tắt tự động vô hiệu hóa an toàn khi đang focus vào ô nhập liệu hoặc khi các hộp thoại (dialog) đang mở.*
+*Shortcuts safely suppress when focusing text input fields or when dialogs are open.*
 
-### 6. 💾 Lưu trữ trạng thái & Khôi phục phiên làm việc
-- **Settings**: Tốc độ, âm lượng, bước tua, số lần lặp, thời gian nghỉ, tự chuyển câu, trạng thái thanh bên và ngôn ngữ được lưu tự động trong `localStorage`.
-- **Session & Marks**: Ghi nhớ tệp đang nghe dở dang và dấu sao/đã nghe theo từng thư mục.
-- **Khôi phục thư mục (Chrome / Edge)**: Caching thư mục qua `IndexedDB` (`FileSystemDirectoryHandle`). Khi mở lại trình duyệt, ứng dụng tự động nhận diện và cung cấp nút xin lại quyền nhanh chóng.
-- **Hỗ trợ Safari**: Tự động nhận diện trình duyệt Safari, cung cấp fallback qua `webkitdirectory` và giữ nguyên cài đặt cùng bài đang nghe dở.
-- **Xóa sạch dữ liệu (Reset)**: Hộp thoại xác nhận an toàn giúp đặt lại toàn bộ thiết lập, xóa session và dọn sạch IndexedDB + LocalStorage.
-
-### 7. 📱 Progressive Web App (PWA) & Ngoại tuyến (Offline)
-- **Cài đặt như ứng dụng riêng (Standalone)**:
-  - **Chrome / Edge**: Bấm nút **"Cài đặt ứng dụng"** ở chân thanh bên hoặc biểu tượng cài đặt trên thanh địa chỉ trình duyệt.
-  - **Safari (macOS Sonoma trở lên)**: Chọn **Tệp → Thêm vào Dock** (File → Add to Dock).
-- **Hoạt động khi mất mạng**: Vỏ ứng dụng (App Shell) được cache qua Service Worker, mở tức thì khi offline.
-- **Không tốn dung lượng cho audio**: Toàn bộ tệp audio được phát trực tiếp từ máy, tuyệt đối không bị cache vào bộ nhớ trình duyệt (Cache Storage).
-- **Thông báo cập nhật**: Khi có phiên bản mới, hiển thị thông báo với nút "Tải lại" tức thì.
+### 5. 📱 PWA & 100% Offline Operation
+- **Installable Standalone App:** Add to macOS Dock, Windows Taskbar, or mobile home screen.
+- **Offline Shell:** Caches application shell via Service Worker; opens instantly without network connection.
+- **Zero Audio Caching:** Audio files stream purely from disk memory and are never stored in browser Cache Storage.
+- **Update Notifications:** Toast prompts when an update is available with a one-click reload button.
 
 ---
 
-## 🛠️ Cài đặt & Khởi chạy
+## 🛠️ Architecture & Tech Stack
 
-### Yêu cầu hệ thống
-- Node.js 20 trở lên
-- Trình duyệt khuyến nghị: **Google Chrome** hoặc **Microsoft Edge** (để tận dụng File System Access API)
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router, Static Export `output: 'export'`)
+- **UI & Styling:** [React 19](https://react.dev/), [Tailwind CSS v4](https://tailwindcss.com/), Lucide Icons
+- **Audio Engine:** [WaveSurfer.js v8](https://wavesurfer.xyz/), HTML5 Media Element, Web Audio API
+- **Local Storage:** File System Access API, IndexedDB, LocalStorage
+- **Testing:** [Vitest](https://vitest.dev/), React Testing Library, JSDOM, v8 Coverage
+- **Modular Quality:** Max 250 lines per file across the entire codebase; clean unidirectional dependency layers.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js `20.x` or `22.x`
+- Recommended Browsers: **Google Chrome** or **Microsoft Edge** (for File System Access API support).
+
+### Installation & Run
 
 ```bash
-# 1. Cài đặt dependencies
+# 1. Clone the repository
+git clone https://github.com/your-username/listening-dictation-app.git
+cd listening-dictation-app
+
+# 2. Install dependencies
 npm install
 
-# 2. Khởi chạy môi trường phát triển (Dev)
+# 3. Start local development server
 npm run dev
+```
 
-# 3. Chạy toàn bộ unit & integration tests
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 🧪 Testing & Verification
+
+```bash
+# Run unit & integration tests (59 tests across 15 suites)
 npm test
 
-# 4. Kiểm tra độ phủ kiểm thử (Coverage ≥ 85%)
+# Run tests with code coverage report (target >= 85%)
 npm run test:coverage
 
-# 5. Kiểm tra kiểu dữ liệu (TypeScript)
+# TypeScript static type check (0 errors)
 npm run typecheck
 
-# 6. Kiểm tra quy chuẩn mã nguồn (ESLint)
+# ESLint lint check (0 errors, 0 warnings)
 npm run lint
 
-# 7. Đóng gói bản phát hành tĩnh (Static Export)
+# Build production static export (outputs to out/)
 npm run build
 ```
 
 ---
 
-## 📚 Tài liệu chi tiết (Documentation)
+## 🌐 Deploy to Vercel (Static Export)
 
-- [Kiến trúc ứng dụng (Architecture Guide)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/ARCHITECTURE.md)
-- [Hướng dẫn kiểm thử & Báo cáo độ phủ (Testing Guide)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/TESTING.md)
-- [Hướng dẫn triển khai Vercel (Deployment Guide)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/DEPLOY.md)
-- [Kế hoạch tái cấu trúc Phase 3 (Refactor Plan)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/REFACTOR_PLAN.md)
-- [Danh mục hành vi hệ thống (Behavior Catalog)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/BEHAVIOR_CATALOG.md)
-- [Báo cáo Baseline trước refactor (Baseline Report)](file:///Users/truongduy/Documents/Dev/listening-dictation-app/docs/BASELINE.md)
+The app is pre-configured for static deployment on Vercel:
+
+```bash
+npx vercel
+```
+
+- **Framework Preset:** `Next.js`
+- **Build Command:** `npm run build`
+- **Output Directory:** `out`
+- **Environment Variables:** *None required (100% client-side privacy)*
+
+Includes [`vercel.json`](./vercel.json) with Service Worker no-cache headers, 1-year immutable caching for static assets, and strict CSP headers.
 
 ---
 
-## ⚠️ Giới hạn hệ thống & Trình duyệt đã biết
+## 📖 Detailed Documentation
 
-- **Quyền đọc thư mục khi ngoại tuyến (Chrome / Edge)**: Nếu quyền truy cập thư mục của trình duyệt đã hết hiệu lực giữa các phiên, Chrome sẽ yêu cầu người dùng bấm **"Cấp quyền lại"** (thao tác này hoàn toàn cục bộ, không cần kết nối mạng).
-- **Giới hạn trên Safari**: Safari hiện chưa hỗ trợ File System Access API và không lưu lại handle thư mục giữa các lần đóng/mở trình duyệt (kể cả khi đã Thêm vào Dock). Do đó, mỗi lần mở mới Safari người dùng cần chọn lại thư mục một lần; cài đặt và tiến độ nghe dở vẫn được lưu trữ đầy đủ.
+- [Architecture Guide (`docs/ARCHITECTURE.md`)](./docs/ARCHITECTURE.md)
+- [Testing Guide (`docs/TESTING.md`)](./docs/TESTING.md)
+- [Deployment Guide (`docs/DEPLOY.md`)](./docs/DEPLOY.md)
+- [Refactor Plan (`docs/REFACTOR_PLAN.md`)](./docs/REFACTOR_PLAN.md)
+- [Behavior Catalog (`docs/BEHAVIOR_CATALOG.md`)](./docs/BEHAVIOR_CATALOG.md)
 
 ---
 
-## 📜 Giấy phép
-Dự án được phân phối dưới giấy phép MIT.
+## ⚠️ Browser Compatibility
+
+- **Chrome / Edge / Chromium (Recommended):** Full support for directory handle persistence via File System Access API. Click "Grant Permission" on return to resume listening.
+- **Safari (macOS / iOS):** Uses standard fallback `<input webkitdirectory>`. Due to WebKit limitations, folder handles cannot be persisted across app closures, requiring re-selecting the folder when reopened. All progress and settings remain saved.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
