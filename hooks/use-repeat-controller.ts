@@ -17,6 +17,7 @@ interface UseRepeatControllerOptions {
   replayRef: React.RefObject<() => void>;
   selectFile: (id: string) => void;
   markListened: (id: string) => void;
+  clearAbLoop?: () => void;
 }
 
 export function useRepeatController({
@@ -31,6 +32,7 @@ export function useRepeatController({
   replayRef,
   selectFile,
   markListened,
+  clearAbLoop,
 }: UseRepeatControllerOptions) {
   const {
     currentRepeat,
@@ -66,6 +68,7 @@ export function useRepeatController({
       if (nextFile) {
         startGapWait(gapSeconds, () => {
           resetLoop();
+          clearAbLoop?.();
           setShouldAutoPlay(true);
           selectFile(nextFile.id);
         });
@@ -90,6 +93,7 @@ export function useRepeatController({
     replayRef,
     resetLoop,
     selectFile,
+    clearAbLoop,
   ]);
 
   const handleAudioProgress = useCallback(

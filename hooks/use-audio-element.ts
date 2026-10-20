@@ -19,6 +19,7 @@ export function useAudioElement({
 }: UseAudioElementOptions) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const currentUrlRef = useRef<string | null>(null);
+  const autoPlayPendingRef = useRef<boolean>(false);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -40,10 +41,13 @@ export function useAudioElement({
     audio.volume = Math.max(0, Math.min(1, optsRef.current.volume));
 
     const handlePlay = () => {
+      autoPlayPendingRef.current = false;
       applyPitchAndRate(audio, optsRef.current.playbackRate);
       setIsPlaying(true);
     };
-    const handlePause = () => setIsPlaying(false);
+    const handlePause = () => {
+      setIsPlaying(false);
+    };
     const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
       if (optsRef.current.onProgress && audio.duration > 0) {
@@ -58,6 +62,13 @@ export function useAudioElement({
       setHasError(false);
       applyPitchAndRate(audio, optsRef.current.playbackRate);
       if (audio.duration && audio.duration > 0) setDuration(audio.duration);
+      if (autoPlayPendingRef.current && audio.paused) {
+        audio.play().catch((err) => {
+          if (err?.name !== "AbortError") {
+            console.warn("Autoplay was prevented on canplay:", err);
+          }
+        });
+      }
     };
     const handleEnded = () => {
       setIsPlaying(false);
@@ -118,6 +129,7 @@ export function useAudioElement({
     setIsPlaying(false);
     setHasError(false);
     setCurrentTime(0);
+    autoPlayPendingRef.current = autoPlay;
 
     const isLarge = file.size > MAX_WAVEFORM_FILE_SIZE;
     setIsLargeFile(isLarge);
@@ -159,6 +171,7 @@ export function useAudioElement({
   }, []);
 
   const pause = useCallback(() => {
+    autoPlayPendingRef.current = false;
     audioRef.current?.pause();
   }, []);
 
@@ -200,6 +213,7 @@ export function useAudioElement({
   }, []);
 
   const resetAudio = useCallback(() => {
+    autoPlayPendingRef.current = false;
     const audio = audioRef.current;
     if (audio) {
       try { audio.pause(); } catch {}

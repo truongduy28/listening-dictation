@@ -87,6 +87,7 @@ function DictationAppInner() {
     replayRef,
     selectFile,
     markListened,
+    clearAbLoop,
   });
 
   const { sidebarCollapsed, handleToggleSidebar, openSidebar } = useSidebarState();
